@@ -436,7 +436,7 @@
             最新の配色パターン（4種類）
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              最明色＝全体背景、最暗色＝ヘッダーと新刊、2番目に明るい色＝年齢区分帯です。カード本体は白です。
+              最明色＝全体背景、最暗色＝ヘッダー・新刊、2番目に明るい色＝年齢区分帯。価格は最も鮮やかな色です。
             </small>
           </div>
           <div id="customBgControls" class="hidden">
@@ -478,7 +478,7 @@
             <select id="cardFontFamily" name="cardFontFamily" class="control"></select>
           </label>
           <small style="color:#64748b;font-size:9px">
-            フォントは無料で利用できるGoogle Fontsを含みます。オンライン環境で読み込まれます。
+            Google Fontsはオンライン環境で読み込まれます。
           </small>
         </section>
 
@@ -624,6 +624,25 @@
       )[1];
     }
 
+    function getSaturation(hex) {
+      const value = hex.replace("#", "");
+      const red = parseInt(value.slice(0, 2), 16) / 255;
+      const green = parseInt(value.slice(2, 4), 16) / 255;
+      const blue = parseInt(value.slice(4, 6), 16) / 255;
+      const maximum = Math.max(red, green, blue);
+      const minimum = Math.min(red, green, blue);
+
+      return maximum === 0 ? 0 : (maximum - minimum) / maximum;
+    }
+
+    function getMostVividColor(colors) {
+      return colors.reduce((mostVivid, color) =>
+        getSaturation(color) > getSaturation(mostVivid)
+          ? color
+          : mostVivid
+      );
+    }
+
     const PALETTES = [
       {
         name:"パターン1",
@@ -645,14 +664,16 @@
       const background = getLightestColor(palette.colors);
       const header = getDarkestColor(palette.colors);
       const ageBandColor = getSecondLightestColor(palette.colors);
+      const mostVivid = getMostVividColor(palette.colors);
 
-      const otherCategoryColors = palette.colors.filter((color) => {
-        const value = color.toUpperCase();
-        return value !== background.toUpperCase() &&
-          value !== ageBandColor.toUpperCase();
-      });
+      const nonBackgroundColors = palette.colors.filter(
+        (color) => color.toUpperCase() !== background.toUpperCase()
+      );
 
-      // 新刊は最暗色に固定。残り3カテゴリには他の色を割り当てる。
+      const otherCategoryColors = nonBackgroundColors.filter(
+        (color) => color.toUpperCase() !== ageBandColor.toUpperCase()
+      );
+
       const categoryColors = [
         header,
         ...otherCategoryColors.filter(
@@ -665,199 +686,81 @@
         background,
         header,
         ageBandColor,
+        mostVivid,
         categoryColors
       };
     });
 
     const FONT_OPTIONS = [
-      {
-        label:"Noto Sans JP（ゴシック）",
-        value:'"Noto Sans JP", sans-serif'
-      },
-      {
-        label:"BIZ UDPゴシック",
-        value:'"BIZ UDPGothic", sans-serif'
-      },
-      {
-        label:"Zen Kaku Gothic New",
-        value:'"Zen Kaku Gothic New", sans-serif'
-      },
-      {
-        label:"M PLUS 1p",
-        value:'"M PLUS 1p", sans-serif'
-      },
-      {
-        label:"M PLUS Rounded 1c（丸ゴシック）",
-        value:'"M PLUS Rounded 1c", sans-serif'
-      },
-      {
-        label:"Zen Maru Gothic（丸ゴシック）",
-        value:'"Zen Maru Gothic", sans-serif'
-      },
-      {
-        label:"Kosugi",
-        value:'"Kosugi", sans-serif'
-      },
-      {
-        label:"Kosugi Maru",
-        value:'"Kosugi Maru", sans-serif'
-      },
-      {
-        label:"Sawarabi Gothic",
-        value:'"Sawarabi Gothic", sans-serif'
-      },
-      {
-        label:"Dela Gothic One（太字）",
-        value:'"Dela Gothic One", sans-serif'
-      },
-      {
-        label:"DotGothic16（ドット）",
-        value:'"DotGothic16", sans-serif'
-      },
-      {
-        label:"RocknRoll One",
-        value:'"RocknRoll One", sans-serif'
-      },
-      {
-        label:"Yusei Magic",
-        value:'"Yusei Magic", sans-serif'
-      },
-      {
-        label:"Noto Sans JP（明朝）",
-        value:'"Noto Sans JP", serif'
-      },
-      {
-        label:"BIZ UDP明朝",
-        value:'"BIZ UDPMincho", serif'
-      },
-      {
-        label:"Shippori Mincho",
-        value:'"Shippori Mincho", serif'
-      },
-      {
-        label:"Zen Old Mincho",
-        value:'"Zen Old Mincho", serif'
-      },
-      {
-        label:"Sawarabi Mincho",
-        value:'"Sawarabi Mincho", serif'
-      },
-      {
-        label:"Kaisei Decol",
-        value:'"Kaisei Decol", serif'
-      },
-      {
-        label:"Klee One（手書き風）",
-        value:'"Klee One", cursive'
-      },
-      {
-        label:"游ゴシック（端末標準）",
-        value:'"Yu Gothic", sans-serif'
-      },
-      {
-        label:"メイリオ（端末標準）",
-        value:"Meiryo, sans-serif"
-      },
-      {
-        label:"標準ゴシック体",
-        value:"sans-serif"
-      },
-      {
-        label:"標準明朝体",
-        value:"serif"
-      }
+      { label:"Noto Sans JP（ゴシック）", value:'"Noto Sans JP", sans-serif' },
+      { label:"BIZ UDPゴシック", value:'"BIZ UDPGothic", sans-serif' },
+      { label:"Zen Kaku Gothic New", value:'"Zen Kaku Gothic New", sans-serif' },
+      { label:"M PLUS 1p", value:'"M PLUS 1p", sans-serif' },
+      { label:"M PLUS Rounded 1c（丸ゴシック）", value:'"M PLUS Rounded 1c", sans-serif' },
+      { label:"Zen Maru Gothic（丸ゴシック）", value:'"Zen Maru Gothic", sans-serif' },
+      { label:"Kosugi", value:'"Kosugi", sans-serif' },
+      { label:"Kosugi Maru", value:'"Kosugi Maru", sans-serif' },
+      { label:"Sawarabi Gothic", value:'"Sawarabi Gothic", sans-serif' },
+      { label:"Dela Gothic One（太字）", value:'"Dela Gothic One", sans-serif' },
+      { label:"DotGothic16（ドット）", value:'"DotGothic16", sans-serif' },
+      { label:"RocknRoll One", value:'"RocknRoll One", sans-serif' },
+      { label:"Yusei Magic", value:'"Yusei Magic", sans-serif' },
+      { label:"BIZ UDP明朝", value:'"BIZ UDPMincho", serif' },
+      { label:"Shippori Mincho", value:'"Shippori Mincho", serif' },
+      { label:"Zen Old Mincho", value:'"Zen Old Mincho", serif' },
+      { label:"Sawarabi Mincho", value:'"Sawarabi Mincho", serif' },
+      { label:"Kaisei Decol", value:'"Kaisei Decol", serif' },
+      { label:"Klee One（手書き風）", value:'"Klee One", cursive' },
+      { label:"游ゴシック（端末標準）", value:'"Yu Gothic", sans-serif' },
+      { label:"メイリオ（端末標準）", value:"Meiryo, sans-serif" },
+      { label:"標準ゴシック体", value:"sans-serif" },
+      { label:"標準明朝体", value:"serif" }
     ];
 
     const PRINT_SPECS = {
       A3: {
-        widthMm:303,
-        heightMm:426,
-        widthPx:2386,
-        heightPx:3354,
-        trimWidthMm:297,
-        trimHeightMm:420
+        widthMm:303, heightMm:426,
+        widthPx:2386, heightPx:3354,
+        trimWidthMm:297, trimHeightMm:420
       },
       A4: {
-        widthMm:216,
-        heightMm:303,
-        widthPx:2976,
-        heightPx:4175,
-        trimWidthMm:210,
-        trimHeightMm:297
+        widthMm:216, heightMm:303,
+        widthPx:2976, heightPx:4175,
+        trimWidthMm:210, trimHeightMm:297
       }
     };
 
     const SOCIAL_PRESETS = {
       WEB_PORTRAIT: {
-        width:960,
-        height:1280,
-        orientation:"PORTRAIT",
-        label:"X用縦書き"
+        width:960, height:1280, orientation:"PORTRAIT", label:"X用縦書き"
       },
       WEB_LANDSCAPE: {
-        width:1200,
-        height:675,
-        orientation:"LANDSCAPE",
-        label:"X用横書き"
+        width:1200, height:675, orientation:"LANDSCAPE", label:"X用横書き"
       },
       PICSQUARE: {
-        width:500,
-        height:1000,
-        orientation:"PORTRAIT",
-        label:"ピクスク用"
+        width:500, height:1000, orientation:"PORTRAIT", label:"ピクスク用"
       },
       PICREA: {
-        width:800,
-        height:1600,
-        orientation:"PORTRAIT",
-        label:"ピクリエ用"
+        width:800, height:1600, orientation:"PORTRAIT", label:"ピクリエ用"
       }
     };
 
     const SOCIAL_LAYOUTS = {
       WEB_PORTRAIT: {
-        header:250,
-        marginX:28,
-        marginY:22,
-        gapX:16,
-        gapY:16,
-        padding:12,
-        cardScale:.55,
-        categoryBand:46,
-        ageBand:28
+        header:250, marginX:28, marginY:22, gapX:16, gapY:16,
+        padding:12, cardScale:.55, categoryBand:46, ageBand:28
       },
       WEB_LANDSCAPE: {
-        header:160,
-        marginX:28,
-        marginY:18,
-        gapX:16,
-        gapY:16,
-        padding:11,
-        cardScale:.48,
-        categoryBand:38,
-        ageBand:24
+        header:160, marginX:28, marginY:18, gapX:16, gapY:16,
+        padding:11, cardScale:.48, categoryBand:38, ageBand:24
       },
       PICSQUARE: {
-        header:143,
-        marginX:16,
-        marginY:16,
-        gapX:12,
-        gapY:12,
-        padding:8,
-        cardScale:.35,
-        categoryBand:34,
-        ageBand:21
+        header:143, marginX:16, marginY:16, gapX:12, gapY:12,
+        padding:8, cardScale:.35, categoryBand:34, ageBand:21
       },
       PICREA: {
-        header:270,
-        marginX:24,
-        marginY:22,
-        gapX:16,
-        gapY:16,
-        padding:12,
-        cardScale:.50,
-        categoryBand:44,
-        ageBand:28
+        header:270, marginX:24, marginY:22, gapX:16, gapY:16,
+        padding:12, cardScale:.50, categoryBand:44, ageBand:28
       }
     };
 
@@ -905,7 +808,6 @@
         title:`頒布物${number}`,
         price:"500円",
         desc:"サンプルテキスト",
-        descriptionFontSize:38,
         image:null,
         imageSrc:"",
         imageWidth:0,
@@ -1028,7 +930,6 @@
           });
           button.classList.add("selected");
           applyPalette(preset);
-
           getEl("paperSpecLabel").textContent =
             `${getLayoutLabel()}・${selectedPalette.name}`;
         });
@@ -1184,10 +1085,6 @@
             <textarea id="item-${index}-desc" name="item-${index}-desc" class="control" data-index="${index}" data-key="desc" rows="3">${escapeHTML(item.desc)}</textarea>
           </label>
 
-          <label class="field">説明文フォントサイズ
-            <input id="item-${index}-descriptionFontSize" name="item-${index}-descriptionFontSize" class="control" type="number" min="8" max="100" data-index="${index}" data-key="descriptionFontSize" value="${item.descriptionFontSize}">
-          </label>
-
           <label class="check-row" style="justify-content:flex-start">
             <input id="item-${index}-noImage" name="item-${index}-noImage" type="checkbox" data-noimage="${index}" ${item.noImage ? "checked" : ""}>
             画像なし（テキスト欄を広く表示）
@@ -1206,14 +1103,7 @@
           const key = input.dataset.key;
           if (!items[index]) return;
 
-          if (key === "descriptionFontSize") {
-            const size = Number.parseInt(input.value, 10);
-            items[index][key] = Number.isFinite(size)
-              ? Math.min(100, Math.max(8, size))
-              : 38;
-          } else {
-            items[index][key] = input.value;
-          }
+          items[index][key] = input.value;
 
           if (key === "category") {
             const price = root.querySelector(
@@ -1255,7 +1145,6 @@
             fileInput.disabled = input.checked;
             if (input.checked) fileInput.value = "";
           }
-
           renderCanvas();
         });
       });
@@ -1430,7 +1319,7 @@
       const weight = options.weight || "400";
       const maxFont = Math.max(1, Number(options.maxFont) || 20);
       const minFont = Math.max(1, Number(options.minFont) || 1);
-      const lineRatio = options.lineHeight || 1.12;
+      const lineRatio = options.lineHeight || 1;
       const width = Math.max(1, box.width);
       const height = Math.max(1, box.height);
 
@@ -1439,7 +1328,7 @@
       let chosen = minFont;
       let lines = null;
 
-      for (let iteration = 0; iteration < 18; iteration++) {
+      for (let iteration = 0; iteration < 20; iteration++) {
         const size = (low + high) / 2;
         context.font = `${weight} ${size}px ${family}`;
         const candidate = wrapLines(context, text, width);
@@ -1491,6 +1380,7 @@
       });
 
       context.restore();
+      return chosen;
     }
 
     function fitSingleLine(context, text, box, options = {}) {
@@ -1505,7 +1395,7 @@
       );
       const width = Math.max(1, box.width);
       const height = Math.max(1, box.height);
-      const verticalRatio = options.verticalRatio || 1.15;
+      const verticalRatio = options.verticalRatio || 1.1;
 
       let low = minFont;
       let high = maxFont;
@@ -1636,7 +1526,8 @@
         family:eventStyle.family,
         color:eventStyle.color,
         background:eventStyle.background,
-        align:"left"
+        align:"left",
+        lineHeight:1
       });
 
       y += rowHeight + gap;
@@ -1695,6 +1586,7 @@
       const categoryStyle = getCategoryStyle(item.category);
       const cardFontFamily = getCardFontFamily();
 
+      // カード本体は白。
       roundRect(
         context,
         x,
@@ -1728,7 +1620,7 @@
         Math.max(15, width * .055)
       );
 
-      // 新刊は最暗色を固定使用。カテゴリ帯の文字はすべて白。
+      // 新刊はパレット内の最暗色。カテゴリ文字色は白。
       context.fillStyle = categoryStyle.background;
       context.fillRect(x, y, width, categoryHeight);
 
@@ -1748,7 +1640,7 @@
           family:cardFontFamily,
           color:"#FFFFFF",
           align:"left",
-          lineHeight:1
+          lineHeight:.94
         }
       );
 
@@ -1775,15 +1667,13 @@
           family:cardFontFamily,
           color:getReadableTextColor(ageBandColor),
           align:"left",
-          lineHeight:1
+          lineHeight:.94
         }
       );
 
-      const bodyY = ageY + ageHeight + padding;
-      const bodyHeight = Math.max(
-        1,
-        height - categoryHeight - ageHeight - padding * 2
-      );
+      const contentTop = ageY + ageHeight + padding;
+      const contentBottom = y + height - padding;
+      const contentHeight = Math.max(1, contentBottom - contentTop);
 
       let textX = x + padding;
       let textWidth = Math.max(1, width - padding * 2);
@@ -1793,14 +1683,14 @@
         const imageWidthRatio = item.category === "新刊" ? .48 : .36;
         const imageScale = Math.min(
           width * imageWidthRatio / Math.max(1, item.imageWidth),
-          bodyHeight * .96 / Math.max(1, item.imageHeight)
+          contentHeight * .96 / Math.max(1, item.imageHeight)
         );
         const imageWidth = item.imageWidth * imageScale;
         const imageHeight = item.imageHeight * imageScale;
 
         imageBox = {
           x:x + padding,
-          y:bodyY + (bodyHeight - imageHeight) / 2,
+          y:contentTop + (contentHeight - imageHeight) / 2,
           width:imageWidth,
           height:imageHeight
         };
@@ -1809,66 +1699,76 @@
         textWidth = Math.max(1, x + width - padding - textX);
       }
 
-      const parts = [];
+      const hasTitle = Boolean(item.title);
+      const hasPrice =
+        !["無料配布","Web展示"].includes(item.category) &&
+        Boolean(item.price);
+      const hasDescription = Boolean(item.desc);
 
-      if (item.title) {
-        parts.push({
-          text:item.title,
-          ratio:.42,
-          max:78 * textScale,
-          color:"#0f172a",
-          weight:"700"
+      const blocks = [];
+      if (hasTitle) blocks.push({ type:"title", text:item.title });
+      if (hasPrice) blocks.push({ type:"price", text:item.price });
+      if (hasDescription) blocks.push({ type:"description", text:item.desc });
+
+      if (blocks.length) {
+        // 項目間の余白を小さくし、残りの高さを各欄に配分する。
+        const gap = Math.max(0, contentHeight * .012);
+        const totalGap = gap * Math.max(0, blocks.length - 1);
+        const usableHeight = Math.max(1, contentHeight - totalGap);
+
+        const weights = blocks.map((block) => {
+          if (block.type === "title") return .29;
+          if (block.type === "price") return .20;
+          return .51;
         });
-      }
+        const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
 
-      if (!["無料配布","Web展示"].includes(item.category) && item.price) {
-        parts.push({
-          text:item.price,
-          ratio:.28,
-          max:100 * textScale,
-          color:categoryStyle.background,
-          weight:"700"
-        });
-      }
+        let cursorY = contentTop;
 
-      if (item.desc) {
-        parts.push({
-          text:item.desc,
-          ratio:.30,
-          max:Math.max(
-            8,
-            Math.min(100, Number(item.descriptionFontSize) || 38)
-          ) * textScale,
-          color:"#475569",
-          weight:"400"
-        });
-      }
+        blocks.forEach((block, index) => {
+          const blockHeight = usableHeight * weights[index] / weightTotal;
+          let maxFont;
+          let color;
+          let weight;
 
-      const ratioSum = parts.reduce((sum, part) => sum + part.ratio, 0);
-      let cursorY = bodyY;
-
-      parts.forEach((part) => {
-        const partHeight = Math.max(
-          1,
-          bodyHeight * part.ratio / Math.max(.01, ratioSum)
-        );
-
-        fitText(
-          context,
-          part.text,
-          { x:textX, y:cursorY, width:textWidth, height:partHeight },
-          {
-            maxFont:part.max,
-            minFont:Math.max(4, 7 * textScale),
-            family:cardFontFamily,
-            color:part.color,
-            weight:part.weight,
-            align:"left"
+          if (block.type === "title") {
+            maxFont = Math.min(blockHeight * .82, textWidth * .19) * textScale;
+            color = "#0f172a";
+            weight = "700";
+          } else if (block.type === "price") {
+            maxFont = Math.min(blockHeight * .9, textWidth * .22) * textScale;
+            color = selectedPalette.mostVivid;
+            weight = "700";
+          } else {
+            // 説明文は入力欄を使わず、カード内の割当領域に合わせて自動縮小。
+            maxFont = Math.min(blockHeight * .78, textWidth * .16) * textScale;
+            color = "#475569";
+            weight = "400";
           }
-        );
 
-        cursorY += partHeight;
-      });
+          fitText(
+            context,
+            block.text,
+            {
+              x:textX,
+              y:cursorY,
+              width:textWidth,
+              height:blockHeight
+            },
+            {
+              maxFont:Math.max(4, maxFont),
+              minFont:Math.max(4, 7 * textScale),
+              family:cardFontFamily,
+              color,
+              weight,
+              align:"left",
+              lineHeight:.94
+            }
+          );
+
+          cursorY += blockHeight + gap;
+        });
+      }
 
       if (imageBox && item.image) {
         context.drawImage(
@@ -2192,11 +2092,11 @@
         getEl(id).addEventListener("input", renderCanvas);
       });
 
-      // フォント選択欄はヘッダー用とカード全体用の2か所のみ。
+      // フォント選択箇所はヘッダーとカード全体の2か所のみ。
       ["headerFontFamily", "cardFontFamily"].forEach((id) => {
-        const select = getEl(id);
-        select.addEventListener("change", async () => {
-          const family = select.value;
+        getEl(id).addEventListener("change", async (event) => {
+          const family = event.target.value;
+
           if (document.fonts && family) {
             try {
               await document.fonts.load(`16px ${family}`);
@@ -2204,6 +2104,7 @@
               console.warn("フォント読み込みに失敗しました:", error);
             }
           }
+
           renderCanvas();
         });
       });
