@@ -1058,6 +1058,9 @@
 
       const lineHeight = chosen * lineRatio;
       let y = box.y + Math.max(0, (height - lines.length * lineHeight) / 2);
+      const align = ["left", "center", "right"].includes(options.align)
+        ? options.align
+        : "left";
 
       context.save();
       context.beginPath();
@@ -1071,13 +1074,13 @@
 
       context.font = `${weight} ${chosen}px ${family}`;
       context.fillStyle = options.color || "#111";
-      context.textAlign = options.align || "left";
+      context.textAlign = align;
       context.textBaseline = "top";
 
-      const x = options.align === "center"
-        ? box.x + width / 2
-        : options.align === "right"
-          ? box.x + width
+      const x = align === "right"
+        ? box.x + width
+        : align === "center"
+          ? box.x + width / 2
           : box.x;
 
       lines.forEach((line) => {
