@@ -354,7 +354,7 @@
             規定カラー（背景・ヘッダー・頒布物カードに反映）
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              選択した4色パレットを背景・ヘッダー・頒布物カードに反映します。
+              選択した5色パレットを背景・ヘッダー・頒布物カードに反映します。
             </small>
           </div>
           <div id="customBgControls" class="hidden">
@@ -364,7 +364,7 @@
           </div>
           <div id="singleColorControls" class="hidden">
             <label class="field">背景色
-              <input id="bgColorPicker" name="backgroundColor" type="color" value="#F5F7F8" class="color-control">
+              <input id="bgColorPicker" name="backgroundColor" type="color" value="#FFFFFF" class="color-control">
             </label>
           </div>
         </section>
@@ -391,10 +391,10 @@
           <h2>ヘッダー配色</h2>
           <div class="two-col">
             <label class="field">背景色
-              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#DC3232" class="color-control">
+              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#22A1FC" class="color-control">
             </label>
             <label class="field">アクセント色
-              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#F5C850" class="color-control">
+              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#FC7E21" class="color-control">
             </label>
           </div>
         </section>
@@ -415,7 +415,7 @@
           <label class="check-row">
             イベント情報の背景色
             <input id="eventInfoBgEnabled" name="eventInfoBgEnabled" type="checkbox">
-            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#DC3232" class="color-control">
+            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#22A1FC" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -434,7 +434,7 @@
           <label class="check-row">
             スペース番号の背景色
             <input id="spaceInfoBgEnabled" name="spaceInfoBgEnabled" type="checkbox">
-            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#3C553C" class="color-control">
+            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#FCBE21" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -453,7 +453,7 @@
           <label class="check-row">
             サークル名の背景色
             <input id="circleInfoBgEnabled" name="circleInfoBgEnabled" type="checkbox">
-            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#DC3232" class="color-control">
+            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#22A1FC" class="color-control">
           </label>
         </section>
 
@@ -502,16 +502,25 @@
     "use strict";
 
     const PALETTES = [
-      { name:"パターン1", background:"#F5F7F8", main:"#DC3232", sub:"#3C553C", accent:"#F5C850" },
-      { name:"パターン2", background:"#F5EEDC", main:"#F5B4C8", sub:"#A0D2AA", accent:"#EB786E" },
-      { name:"パターン3", background:"#EBFAFA", main:"#008CD2", sub:"#5AD2DC", accent:"#F5963C" },
-      { name:"パターン4", background:"#F0E6C8", main:"#EB8732", sub:"#73825F", accent:"#502D5A" },
-      { name:"パターン5", background:"#F0F3F5", main:"#1E2D50", sub:"#A0AAB4", accent:"#5AAAE6" },
-      { name:"パターン6", background:"#EBE1C8", main:"#37553C", sub:"#788C69", accent:"#64462D" },
-      { name:"パターン7", background:"#FAF8F0", main:"#468CB9", sub:"#5FC8C8", accent:"#E1CDA5" },
-      { name:"パターン8", background:"#FAF5E1", main:"#FF5587", sub:"#5ACDD7", accent:"#5F376E" },
-      { name:"パターン9", background:"#F8F8F5", main:"#464646", sub:"#AAAAAA", accent:"#2D78BE" }
-    ];
+      { name:"パターン1", background:"#FFFFFF", colors:["#22A1FC","#FCBE21","#FC7E21","#4F6A7D","#7D704F"] },
+      { name:"パターン2", background:"#FFFFFF", colors:["#1B4B56","#57401B","#572D1B","#AECFD6","#D6C7AE"] },
+      { name:"パターン3", background:"#FFFFFF", colors:["#40CCE6","#E6A640","#E66E40","#506366","#665D50"] },
+      { name:"パターン4", background:"#FFFFFF", colors:["#1AE7C5","#E8781A","#E8301A","#406962","#695240"] },
+      { name:"パターン5", background:"#FFFFFF", colors:["#916934","#347091","#524432","#2A363C","#FFF0DB"] },
+      { name:"パターン6", background:"#FFFFFF", colors:["#1ED37B","#D4341E","#3A9468","#7F443C","#365446"] },
+      { name:"パターン7", background:"#FFFFFF", colors:["#1ED37B","#D4531E","#D41E40","#365446","#543F36"] },
+      { name:"パターン8", background:"#FFFFFF", colors:["#5E4849","#495E56","#4B5E49","#DE767B","#76DEB4"] },
+      { name:"パターン9", background:"#FFFFFF", colors:["#FDDCD2","#D2FCF1","#BD9488","#6BA797","#7D4A3B"] },
+      { name:"パターン10", background:"#FFFFFF", colors:["#A35DFA","#FAF85C","#9373BA","#A5A474","#726A7A"] },
+      { name:"パターン11", background:"#FFFFFF", colors:["#69E5F5","#F5A669","#7BAEB5","#A08A7A","#667475"] }
+    ].map((palette) => ({
+      ...palette,
+      main:palette.colors[0],
+      sub:palette.colors[1],
+      accent:palette.colors[2],
+      cardColor4:palette.colors[3],
+      cardColor5:palette.colors[4]
+    }));
 
     const FONT_FAMILIES = [
       { label:"Noto Sans JP", value:'"Noto Sans JP", sans-serif' },
@@ -609,16 +618,22 @@
 
     function getCategoryStyle(category) {
       const color = {
-        "新刊":selectedPalette.main,
-        "既刊":selectedPalette.sub,
-        "無料配布":selectedPalette.accent,
-        "Web展示":selectedPalette.background
-      }[category] || selectedPalette.main;
+        "新刊":selectedPalette.colors[0],
+        "既刊":selectedPalette.colors[1],
+        "無料配布":selectedPalette.colors[2],
+        "Web展示":selectedPalette.colors[3]
+      }[category] || selectedPalette.colors[0];
 
       return {
         background:color,
         text:getReadableTextColor(color)
       };
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+      })[char]);
     }
 
     function fontFamilyOptions(selected) {
@@ -634,6 +649,7 @@
         renderItems();
         bindEvents();
         updateLayout();
+
         if (document.fonts && document.fonts.ready) {
           document.fonts.ready.then(renderCanvas).catch(() => {});
         }
@@ -659,9 +675,12 @@
       PALETTES.forEach((preset) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.title = `${preset.name}（背景・メイン・サブ・アクセント）`;
+        button.title = `${preset.name}（背景・カード用5色）`;
+        const stops = preset.colors.map((color, index) =>
+          `${color} ${index * 20}% ${(index + 1) * 20}%`
+        ).join(",");
         button.innerHTML =
-          `<span class="swatch" style="background:linear-gradient(90deg,${preset.background} 0 25%,${preset.main} 25% 50%,${preset.sub} 50% 75%,${preset.accent} 75% 100%)"></span><span>${preset.name}</span>`;
+          `<span class="swatch" style="background:linear-gradient(90deg,${stops})"></span><span>${preset.name}</span>`;
         button.classList.toggle("selected", preset.name === selectedPalette.name);
 
         button.addEventListener("click", () => {
@@ -679,7 +698,6 @@
           getEl("eventInfoTextColor").value = getReadableTextColor(preset.main);
           getEl("spaceInfoTextColor").value = getReadableTextColor(preset.main);
           getEl("circleInfoTextColor").value = getReadableTextColor(preset.main);
-
           getEl("eventInfoBgColor").value = preset.main;
           getEl("spaceInfoBgColor").value = preset.sub;
           getEl("circleInfoBgColor").value = preset.main;
@@ -773,12 +791,6 @@
       safeGuide.style.top = `${bleedTop + safeY}px`;
       safeGuide.style.width = `${Math.max(1, trimWidth - safeX * 2)}px`;
       safeGuide.style.height = `${Math.max(1, trimHeight - safeY * 2)}px`;
-    }
-
-    function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-      })[char]);
     }
 
     function renderItems() {
@@ -887,6 +899,7 @@
           }
           renderCanvas();
         };
+
         input.addEventListener("input", update);
         input.addEventListener("change", update);
       });
@@ -950,18 +963,21 @@
       if (!file || !file.type || !file.type.startsWith("image/")) {
         throw new Error("画像ファイルを選択してください。");
       }
+
       const src = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = () => reject(new Error(`画像を読み込めませんでした: ${file.name}`));
         reader.readAsDataURL(file);
       });
+
       const image = await loadImage(src);
       return { src, image, width:image.naturalWidth, height:image.naturalHeight };
     }
 
     async function loadItemImage(index, file) {
       if (!file || !items[index]) return;
+
       try {
         const loaded = await readImageFile(file);
         Object.assign(items[index], {
@@ -980,6 +996,7 @@
 
     async function uploadBatch(files) {
       if (!files.length) return;
+
       try {
         const loaded = await Promise.all(Array.from(files).map(readImageFile));
         loaded.forEach((entry) => {
@@ -1011,6 +1028,7 @@
         context.fillRect(0, 0, outputWidth, outputHeight);
         return;
       }
+
       if (type === "custom" && customBackground) {
         context.drawImage(customBackground, 0, 0, outputWidth, outputHeight);
         return;
@@ -1027,6 +1045,7 @@
       const enabledEl = document.getElementById(`${prefix}BgEnabled`);
       const bgColorEl = document.getElementById(`${prefix}BgColor`);
       const size = Number.parseInt(sizeEl ? sizeEl.value : "", 10);
+
       return {
         size:Number.isFinite(size) ? size : defaultSize,
         family:(familyEl && familyEl.value) || DEFAULT_FONT_FAMILY,
@@ -1037,6 +1056,7 @@
 
     function wrapLines(context, text, maxWidth) {
       const lines = [];
+
       String(text || "").split("\n").forEach((paragraph) => {
         let line = "";
         for (const char of Array.from(paragraph)) {
@@ -1050,6 +1070,7 @@
         }
         lines.push(line);
       });
+
       return lines.length ? lines : [""];
     }
 
@@ -1071,6 +1092,7 @@
         const size = (low + high) / 2;
         context.font = `${weight} ${size}px ${family}`;
         const candidate = wrapLines(context, text, width);
+
         if (candidate.length * size * lineRatio <= height) {
           chosen = size;
           lines = candidate;
@@ -1147,50 +1169,41 @@
         const firstRowY = bleedTop + topInset;
         const secondRowY = firstRowY + firstRowHeight + rowGap;
 
-        fitSingleLine(context, eventText, {
-          x,
-          y:firstRowY,
-          width,
-          height:firstRowHeight
-        }, {
-          maxFont:eventStyle.size,
-          minFont:social ? 5 : 8,
-          weight:"700",
-          family:eventStyle.family,
-          color:eventStyle.color,
-          background:eventStyle.background
-        });
+        fitSingleLine(context, eventText,
+          { x, y:firstRowY, width, height:firstRowHeight },
+          {
+            maxFont:eventStyle.size,
+            minFont:social ? 5 : 8,
+            weight:"700",
+            family:eventStyle.family,
+            color:eventStyle.color,
+            background:eventStyle.background
+          });
 
         const columnGap = Math.max(social ? 8 : 14, width * 0.035);
         const columnWidth = Math.max(1, (width - columnGap) / 2);
 
-        fitSingleLine(context, spaceText, {
-          x,
-          y:secondRowY,
-          width:columnWidth,
-          height:secondRowHeight
-        }, {
-          maxFont:spaceStyle.size,
-          minFont:social ? 5 : 8,
-          weight:"700",
-          family:spaceStyle.family,
-          color:spaceStyle.color,
-          background:spaceStyle.background
-        });
+        fitSingleLine(context, spaceText,
+          { x, y:secondRowY, width:columnWidth, height:secondRowHeight },
+          {
+            maxFont:spaceStyle.size,
+            minFont:social ? 5 : 8,
+            weight:"700",
+            family:spaceStyle.family,
+            color:spaceStyle.color,
+            background:spaceStyle.background
+          });
 
-        fitSingleLine(context, circleText, {
-          x:x + columnWidth + columnGap,
-          y:secondRowY,
-          width:columnWidth,
-          height:secondRowHeight
-        }, {
-          maxFont:circleStyle.size,
-          minFont:social ? 5 : 8,
-          weight:"700",
-          family:circleStyle.family,
-          color:circleStyle.color,
-          background:circleStyle.background
-        });
+        fitSingleLine(context, circleText,
+          { x:x + columnWidth + columnGap, y:secondRowY, width:columnWidth, height:secondRowHeight },
+          {
+            maxFont:circleStyle.size,
+            minFont:social ? 5 : 8,
+            weight:"700",
+            family:circleStyle.family,
+            color:circleStyle.color,
+            background:circleStyle.background
+          });
         return;
       }
 
@@ -1200,43 +1213,38 @@
       const rowHeight = Math.max(1, (available - gap * 2) / 3);
       let y = bleedTop + top;
 
-      fitText(context, eventText,
-        { x, y, width, height:rowHeight },
-        {
-          maxFont:eventStyle.size,
-          minFont:6,
-          weight:"700",
-          family:eventStyle.family,
-          color:eventStyle.color,
-          background:eventStyle.background
-        });
+      fitText(context, eventText, { x, y, width, height:rowHeight }, {
+        maxFont:eventStyle.size,
+        minFont:6,
+        weight:"700",
+        family:eventStyle.family,
+        color:eventStyle.color,
+        background:eventStyle.background,
+        align:"left"
+      });
 
       y += rowHeight + gap;
-      fitText(context, spaceText,
-        { x, y, width, height:rowHeight },
-        {
-          maxFont:spaceStyle.size,
-          minFont:6,
-          weight:"700",
-          family:spaceStyle.family,
-          color:spaceStyle.color,
-          background:spaceStyle.background,
-          align:"left",
-          lineHeight:1
-        });
+      fitText(context, spaceText, { x, y, width, height:rowHeight }, {
+        maxFont:spaceStyle.size,
+        minFont:6,
+        weight:"700",
+        family:spaceStyle.family,
+        color:spaceStyle.color,
+        background:spaceStyle.background,
+        align:"left",
+        lineHeight:1
+      });
 
       y += rowHeight + gap;
-      fitText(context, circleText,
-        { x, y, width, height:rowHeight },
-        {
-          maxFont:circleStyle.size,
-          minFont:6,
-          weight:"700",
-          family:circleStyle.family,
-          color:circleStyle.color,
-          align:"left",
-          lineHeight:1
-        });
+      fitText(context, circleText, { x, y, width, height:rowHeight }, {
+        maxFont:circleStyle.size,
+        minFont:6,
+        weight:"700",
+        family:circleStyle.family,
+        color:circleStyle.color,
+        align:"left",
+        lineHeight:1
+      });
     }
 
     function fitSingleLine(context, text, box, options = {}) {
@@ -1279,7 +1287,7 @@
       }
 
       context.font = `${weight} ${chosen}px ${family}`;
-      context.fillStyle = options.color || "#111111";
+      context.fillStyle = options.color || "#111";
       context.textAlign = "left";
       context.textBaseline = "middle";
       context.fillText(text, box.x, box.y + height / 2, width);
@@ -1324,8 +1332,8 @@
         (width / Math.max(1, config.referenceWidth)) * heightScale
       );
       const textScale = config.textScale * areaScale;
-
       const style = getCategoryStyle(item.category);
+
       const categoryHeight = Math.min(
         config.categoryBand * heightScale,
         height * .16,
@@ -1353,7 +1361,8 @@
 
       const ageY = y + categoryHeight;
       const isR18 = item.ageRating === "R18";
-      context.fillStyle = isR18 ? "#991b1b" : selectedPalette.background;
+      const ageBandColor = selectedPalette.colors[4];
+      context.fillStyle = isR18 ? "#991b1b" : ageBandColor;
       context.fillRect(x, ageY, width, ageHeight);
       fitText(context, isR18 ? "R18" : "全年齢",
         { x:x + padding, y:ageY + 1, width:width - padding * 2, height:ageHeight - 2 },
@@ -1362,7 +1371,7 @@
           minFont:1,
           weight:"700",
           family:item.ageRatingFontFamily,
-          color:isR18 ? "#fff" : getReadableTextColor(selectedPalette.background),
+          color:isR18 ? "#fff" : getReadableTextColor(ageBandColor),
           align:"left",
           lineHeight:1
         });
@@ -1381,6 +1390,7 @@
         );
         const imageWidth = item.imageWidth * imageScale;
         const imageHeight = item.imageHeight * imageScale;
+
         imageBox = {
           x:x + padding,
           y:bodyY + (bodyHeight - imageHeight) / 2,
@@ -1509,7 +1519,6 @@
             };
             rows.push(row);
           }
-
           row.items.push(item);
         });
 
@@ -1575,11 +1584,13 @@
 
     function setupResize() {
       const workspace = getEl("workspace");
+
       if ("ResizeObserver" in window) {
         new ResizeObserver(() => {
           if (previewMode === "fit") fitPreview();
         }).observe(workspace);
       }
+
       window.addEventListener("resize", () => {
         if (previewMode === "fit") fitPreview();
       });
@@ -1613,6 +1624,7 @@
 
       handle.addEventListener("pointermove", (event) => {
         if (!drag || drag.id !== event.pointerId) return;
+
         const rect = workspace.getBoundingClientRect();
         toolbar.style.left = `${Math.max(0, Math.min(
           rect.width - toolbar.offsetWidth,
@@ -1715,6 +1727,7 @@
       getEl("customBgInput").addEventListener("change", async (event) => {
         const file = event.target.files && event.target.files[0];
         if (!file) return;
+
         try {
           const loaded = await readImageFile(file);
           customBackground = loaded.image;
