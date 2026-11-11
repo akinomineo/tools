@@ -351,10 +351,10 @@
             </select>
           </label>
           <div class="field">
-            規定カラー（背景・ヘッダー・頒布物カードに反映）
+            規定カラー
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              全体背景にはパレット内の最も淡い色、カード本体には白を使用します。
+              全体背景はパレット内の最淡色、ヘッダーは最暗色、カード本体は白です。
             </small>
           </div>
           <div id="customBgControls" class="hidden">
@@ -364,7 +364,7 @@
           </div>
           <div id="singleColorControls" class="hidden">
             <label class="field">背景色
-              <input id="bgColorPicker" name="backgroundColor" type="color" value="#FFFFFF" class="color-control">
+              <input id="bgColorPicker" name="backgroundColor" type="color" value="#E0D68A" class="color-control">
             </label>
           </div>
         </section>
@@ -501,18 +501,44 @@
   <script>
     "use strict";
 
+    function getRelativeLuminance(hex) {
+      const channels = hex.replace("#", "").match(/.{2}/g)
+        .map((channel) => parseInt(channel, 16) / 255);
+      const linear = channels.map((value) =>
+        value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+      );
+      return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+    }
+
+    function getLightestColor(colors) {
+      return colors.reduce((lightest, color) =>
+        getRelativeLuminance(color) > getRelativeLuminance(lightest) ? color : lightest
+      );
+    }
+
+    function getDarkestColor(colors) {
+      return colors.reduce((darkest, color) =>
+        getRelativeLuminance(color) < getRelativeLuminance(darkest) ? color : darkest
+      );
+    }
+
     const PALETTES = [
       { name:"パターン1", colors:["#320A28","#511730","#8E443D","#CB9173","#E0D68A"] },
       { name:"パターン2", colors:["#91F9E5","#76F7BF","#5FDD9D","#499167","#3F4531"] },
       { name:"パターン3", colors:["#DDD78D","#DCBF85","#8B635C","#60594D","#93A29B"] },
       { name:"パターン4", colors:["#EA526F","#E76B74","#D7AF70","#937D64","#585B56"] },
-      { name:"パターン5", colors:["#334139","#1E2D24","#C52184","#E574BC","#F9B4ED"] },
-      { name:"パターン6", colors:["#003844","#006C67","#F194B4","#FFB100","#FFEBC6"] },
-      { name:"パターン7", colors:["#04151F","#183A37","#EFD6AC","#C44900","#432534"] },
-      { name:"パターン8", colors:["#BCABAE","#0F0F0F","#2D2E2E","#716969","#FBFBFB"] }
+      { name:"パターン5", colors:["#BA2D0B","#D5F2E3","#73BA9B","#003E1F","#01110A"] },
+      { name:"パターン6", colors:["#DCD6F7","#A6B1E1","#B4869F","#985F6F","#4E4C67"] },
+      { name:"パターン7", colors:["#FAF3DD","#C8D5B9","#8FC0A9","#68B0AB","#696D7D"] },
+      { name:"パターン8", colors:["#504746","#B89685","#BFADA3","#FBB7C0","#B6244F"] },
+      { name:"パターン9", colors:["#334139","#1E2D24","#C52184","#E574BC","#F9B4ED"] },
+      { name:"パターン10", colors:["#003844","#006C67","#F194B4","#FFB100","#FFEBC6"] },
+      { name:"パターン11", colors:["#04151F","#183A37","#EFD6AC","#C44900","#432534"] },
+      { name:"パターン12", colors:["#BCABAE","#0F0F0F","#2D2E2E","#716969","#FBFBFB"] }
     ].map((palette) => ({
       ...palette,
       background:getLightestColor(palette.colors),
+      header:getDarkestColor(palette.colors),
       main:palette.colors[0],
       sub:palette.colors[1],
       accent:palette.colors[2],
@@ -577,21 +603,6 @@
     let renderToken = 0;
     let nextItemNumber = 3;
 
-    function getLightestColor(colors) {
-      function luminance(hex) {
-        const channels = hex.replace("#", "").match(/.{2}/g)
-          .map((channel) => parseInt(channel, 16) / 255);
-        const linear = channels.map((value) =>
-          value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
-        );
-        return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
-      }
-
-      return colors.reduce((lightest, color) =>
-        luminance(color) > luminance(lightest) ? color : lightest
-      );
-    }
-
     function makeDefaultItem(number) {
       return {
         category:"新刊",
@@ -621,12 +632,7 @@
     }
 
     function getReadableTextColor(hex) {
-      const value = hex.replace("#", "");
-      const red = parseInt(value.slice(0, 2), 16);
-      const green = parseInt(value.slice(2, 4), 16);
-      const blue = parseInt(value.slice(4, 6), 16);
-      const luminance = (red * 299 + green * 587 + blue * 114) / 1000;
-      return luminance >= 150 ? "#1e293b" : "#ffffff";
+      return getRelativeLuminance(hex) > 0.179 ? "#1e293b" : "#ffffff";
     }
 
     function getCategoryStyle(category) {
@@ -703,14 +709,19 @@
           getEl("singleColorControls").classList.add("hidden");
           getEl("bgColorPicker").value = preset.background;
 
-          getEl("headerBgColor").value = preset.main;
+          // パレット内の最暗色をヘッダー背景にする。
+          getEl("headerBgColor").value = preset.header;
           getEl("headerAccentColor").value = preset.accent;
-          getEl("eventInfoTextColor").value = getReadableTextColor(preset.main);
-          getEl("spaceInfoTextColor").value = getReadableTextColor(preset.main);
-          getEl("circleInfoTextColor").value = getReadableTextColor(preset.main);
-          getEl("eventInfoBgColor").value = preset.main;
+
+          // ヘッダー文字色は背景に合わせて読みやすい色へ調整する。
+          const headerTextColor = getReadableTextColor(preset.header);
+          getEl("eventInfoTextColor").value = headerTextColor;
+          getEl("spaceInfoTextColor").value = headerTextColor;
+          getEl("circleInfoTextColor").value = headerTextColor;
+
+          getEl("eventInfoBgColor").value = preset.header;
           getEl("spaceInfoBgColor").value = preset.sub;
-          getEl("circleInfoBgColor").value = preset.main;
+          getEl("circleInfoBgColor").value = preset.header;
 
           renderCanvas();
         });
@@ -1485,7 +1496,7 @@
           ? social.header
           : Math.round(trimHeight * (landscape ? .17 : .15));
 
-        context.fillStyle = getEl("headerBgColor").value || selectedPalette.main;
+        context.fillStyle = getEl("headerBgColor").value || selectedPalette.header;
         context.fillRect(0, 0, outputWidth, Math.min(outputHeight, bleedTop + headerHeight));
 
         const accentHeight = social
@@ -1499,9 +1510,9 @@
           context,
           social,
           headerHeight,
-          getHeaderStyle("eventInfo", sizes.event, getReadableTextColor(selectedPalette.main)),
-          getHeaderStyle("spaceInfo", sizes.space, getReadableTextColor(selectedPalette.main)),
-          getHeaderStyle("circleInfo", sizes.circle, getReadableTextColor(selectedPalette.main))
+          getHeaderStyle("eventInfo", sizes.event, getReadableTextColor(selectedPalette.header)),
+          getHeaderStyle("spaceInfo", sizes.space, getReadableTextColor(selectedPalette.header)),
+          getHeaderStyle("circleInfo", sizes.circle, getReadableTextColor(selectedPalette.header))
         );
 
         const columns = 2;
