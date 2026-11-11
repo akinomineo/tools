@@ -1324,10 +1324,7 @@
       const family = options.family || "sans-serif";
       const weight = options.weight || "400";
       const maxFont = Math.max(1, Number(options.maxFont) || 20);
-      const minFont = Math.max(
-        1,
-        Math.min(maxFont, Number(options.minFont) || 1)
-      );
+      const minFont = Math.max(1, Number(options.minFont) || 1);
       const lineRatio = options.lineHeight || 1.12;
       const width = Math.max(1, box.width);
       const height = Math.max(1, box.height);
@@ -1627,7 +1624,6 @@
         Math.max(15, width * .055)
       );
 
-      // 新刊はパレット内の最暗色、カテゴリ帯文字は白。
       context.fillStyle = categoryStyle.background;
       context.fillRect(x, y, width, categoryHeight);
 
@@ -1651,7 +1647,6 @@
         }
       );
 
-      // 年齢区分帯は2番目に明るい色。
       const ageY = y + categoryHeight;
       const ageBandColor = selectedPalette.ageBandColor;
 
@@ -1687,7 +1682,14 @@
       let imageBox = null;
 
       if (item.image && !item.noImage) {
-        const imageWidthRatio = item.category === "新刊" ? .48 : .36;
+        // ピクスク・ピクリエではカテゴリにかかわらず同じ画像幅比率にする。
+        const equalImageSizing = paper === "PICSQUARE" || paper === "PICREA";
+        const imageWidthRatio = equalImageSizing
+          ? .36
+          : item.category === "新刊"
+            ? .48
+            : .36;
+
         const imageScale = Math.min(
           width * imageWidthRatio / Math.max(1, item.imageWidth),
           contentHeight * .96 / Math.max(1, item.imageHeight)
@@ -1716,7 +1718,6 @@
       if (item.desc) blocks.push({ type:"description", text:item.desc });
 
       if (blocks.length) {
-        // 行間は以前の間隔に戻し、タイトル・価格に多めの高さを配分。
         const gap = Math.max(2, contentHeight * .025);
         const totalGap = gap * Math.max(0, blocks.length - 1);
         const availableHeight = Math.max(1, contentHeight - totalGap);
@@ -1737,17 +1738,14 @@
           let fontWeight;
 
           if (block.type === "title") {
-            // タイトルはカードに合わせて大きく自動調整。
             maxFont = Math.min(blockHeight * 1.02, textWidth * .30) * textScale;
             color = "#0f172a";
             fontWeight = "700";
           } else if (block.type === "price") {
-            // 価格も目立つよう大きくし、最も鮮やかな色を使う。
             maxFont = Math.min(blockHeight * 1.08, textWidth * .32) * textScale;
             color = selectedPalette.mostVivid;
             fontWeight = "700";
           } else {
-            // 説明文はタイトルや価格より小さく、割当領域に合わせて自動縮小。
             maxFont = Math.min(blockHeight * .72, textWidth * .17) * textScale;
             color = "#475569";
             fontWeight = "400";
@@ -1868,6 +1866,10 @@
         const startY = headerHeight +
           (social ? 10 : Math.max(24 * printScale, safeY));
 
+        // ピクスク・ピクリエでは新刊も他カテゴリと同じ行高にする。
+        const sameNewReleaseRowHeight =
+          paper === "PICSQUARE" || paper === "PICREA";
+
         const rows = [];
 
         items.forEach((item) => {
@@ -1881,7 +1883,7 @@
           ) {
             row = {
               items:[],
-              units:isNewRelease ? 1.5 : 1,
+              units:isNewRelease && !sameNewReleaseRowHeight ? 1.5 : 1,
               isNewRelease
             };
             rows.push(row);
@@ -2111,8 +2113,8 @@
 
     function openActualSizePreview() {
       renderCanvas();
-
       const imageUrl = canvas.toDataURL("image/png");
+
       makeOutputWindow(
         "実寸大プレビュー",
         imageUrl,
