@@ -11,7 +11,11 @@
 
   <style>
     * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
 
     body {
       display: flex;
@@ -55,7 +59,11 @@
       font-size: 19px;
     }
 
-    .brand h1 { margin: 0; font-size: 14px; line-height: 1.3; }
+    .brand h1 {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.3;
+    }
 
     .brand p {
       overflow: hidden;
@@ -114,8 +122,16 @@
       font-weight: 700;
     }
 
-    .panel-heading small { color: #4ade80; font-size: 9px; }
-    #settingsContent { flex: 1 1 auto; overflow: auto; padding: 14px; }
+    .panel-heading small {
+      color: #4ade80;
+      font-size: 9px;
+    }
+
+    #settingsContent {
+      flex: 1 1 auto;
+      overflow: auto;
+      padding: 14px;
+    }
 
     .section {
       margin-bottom: 12px;
@@ -125,8 +141,19 @@
       background: rgba(15, 23, 42, .65);
     }
 
-    .section h2 { margin: 0 0 10px; color: #fb7185; font-size: 12px; }
-    .field { display: block; margin-bottom: 9px; color: #94a3b8; font-size: 10px; }
+    .section h2 {
+      margin: 0 0 10px;
+      color: #fb7185;
+      font-size: 12px;
+    }
+
+    .field {
+      display: block;
+      margin-bottom: 9px;
+      color: #94a3b8;
+      font-size: 10px;
+    }
+
     .field:last-child { margin-bottom: 0; }
 
     .control {
@@ -351,7 +378,10 @@
       font-size: 10px;
     }
 
-    #previewToolbarDrag { cursor: grab; touch-action: none; }
+    #previewToolbarDrag {
+      cursor: grab;
+      touch-action: none;
+    }
 
     @media (max-width: 767px) {
       #mainLayout { display: block; overflow: auto; }
@@ -394,6 +424,7 @@
         <p id="paperSpecLabel">A3縦・パターン1</p>
       </div>
     </div>
+
     <div class="actions">
       <button id="actualSizePreviewBtn" class="button button-preview" type="button">実寸大プレビュー</button>
       <button id="pdfExportBtn" class="button button-pdf" type="button">PDF出力</button>
@@ -726,48 +757,94 @@
 
     const PRINT_SPECS = {
       A3: {
-        widthMm:303, heightMm:426,
-        widthPx:2386, heightPx:3354,
-        trimWidthMm:297, trimHeightMm:420
+        widthMm:303,
+        heightMm:426,
+        widthPx:2386,
+        heightPx:3354,
+        trimWidthMm:297,
+        trimHeightMm:420
       },
       A4: {
-        widthMm:216, heightMm:303,
-        widthPx:2976, heightPx:4175,
-        trimWidthMm:210, trimHeightMm:297
+        widthMm:216,
+        heightMm:303,
+        widthPx:2976,
+        heightPx:4175,
+        trimWidthMm:210,
+        trimHeightMm:297
       }
     };
 
     const SOCIAL_PRESETS = {
       WEB_PORTRAIT: {
-        width:960, height:1280, orientation:"PORTRAIT", label:"X用縦書き"
+        width:960,
+        height:1280,
+        orientation:"PORTRAIT",
+        label:"X用縦書き"
       },
       WEB_LANDSCAPE: {
-        width:1200, height:675, orientation:"LANDSCAPE", label:"X用横書き"
+        width:1200,
+        height:675,
+        orientation:"LANDSCAPE",
+        label:"X用横書き"
       },
       PICSQUARE: {
-        width:500, height:1000, orientation:"PORTRAIT", label:"ピクスク用"
+        width:500,
+        height:1000,
+        orientation:"PORTRAIT",
+        label:"ピクスク用"
       },
       PICREA: {
-        width:800, height:1600, orientation:"PORTRAIT", label:"ピクリエ用"
+        width:800,
+        height:1600,
+        orientation:"PORTRAIT",
+        label:"ピクリエ用"
       }
     };
 
     const SOCIAL_LAYOUTS = {
       WEB_PORTRAIT: {
-        header:250, marginX:28, marginY:22, gapX:16, gapY:16,
-        padding:12, cardScale:.55, categoryBand:46, ageBand:28
+        header:250,
+        marginX:28,
+        marginY:22,
+        gapX:16,
+        gapY:16,
+        padding:12,
+        cardScale:.55,
+        categoryBand:46,
+        ageBand:28
       },
       WEB_LANDSCAPE: {
-        header:160, marginX:28, marginY:18, gapX:16, gapY:16,
-        padding:11, cardScale:.48, categoryBand:38, ageBand:24
+        header:160,
+        marginX:28,
+        marginY:18,
+        gapX:16,
+        gapY:16,
+        padding:11,
+        cardScale:.48,
+        categoryBand:38,
+        ageBand:24
       },
       PICSQUARE: {
-        header:143, marginX:16, marginY:16, gapX:12, gapY:12,
-        padding:8, cardScale:.35, categoryBand:34, ageBand:21
+        header:143,
+        marginX:16,
+        marginY:16,
+        gapX:12,
+        gapY:12,
+        padding:8,
+        cardScale:.35,
+        categoryBand:34,
+        ageBand:21
       },
       PICREA: {
-        header:270, marginX:24, marginY:22, gapX:16, gapY:16,
-        padding:12, cardScale:.50, categoryBand:44, ageBand:28
+        header:270,
+        marginX:24,
+        marginY:22,
+        gapX:16,
+        gapY:16,
+        padding:12,
+        cardScale:.50,
+        categoryBand:44,
+        ageBand:28
       }
     };
 
@@ -827,7 +904,9 @@
 
     function getEl(id) {
       const element = document.getElementById(id);
-      if (!element) throw new Error(`必要なHTML要素がありません: #${id}`);
+      if (!element) {
+        throw new Error(`必要なHTML要素がありません: #${id}`);
+      }
       return element;
     }
 
@@ -1014,7 +1093,8 @@
       updateGuides();
 
       const label = getLayoutLabel();
-      getEl("paperSpecLabel").textContent = `${label}・${selectedPalette.name}`;
+      getEl("paperSpecLabel").textContent =
+        `${label}・${selectedPalette.name}`;
       getEl("dimensionDisplay").textContent = label;
       getEl("layoutHelp").textContent =
         "ヘッダー文字は指定サイズを上限に、領域に合わせて自動調整します。";
@@ -1099,6 +1179,7 @@
             <input id="item-${index}-image" name="item-${index}-image" class="control" type="file" accept="image/*" data-image="${index}" ${item.noImage ? "disabled" : ""}>
           </label>
         `;
+
         root.appendChild(card);
       });
 
@@ -1516,6 +1597,7 @@
             background:circleStyle.background
           }
         );
+
         return;
       }
 
@@ -1579,6 +1661,7 @@
         context.fillStyle = fill;
         context.fill();
       }
+
       if (stroke) {
         context.strokeStyle = stroke;
         context.lineWidth = lineWidth;
@@ -1682,14 +1765,8 @@
       let imageBox = null;
 
       if (item.image && !item.noImage) {
-        // ピクスク・ピクリエではカテゴリにかかわらず同じ画像幅比率にする。
-        const equalImageSizing = paper === "PICSQUARE" || paper === "PICREA";
-        const imageWidthRatio = equalImageSizing
-          ? .36
-          : item.category === "新刊"
-            ? .48
-            : .36;
-
+        // 全カテゴリで画像の幅比率と縮尺計算を統一。
+        const imageWidthRatio = .36;
         const imageScale = Math.min(
           width * imageWidthRatio / Math.max(1, item.imageWidth),
           contentHeight * .96 / Math.max(1, item.imageHeight)
@@ -1709,13 +1786,18 @@
       }
 
       const blocks = [];
-      if (item.title) blocks.push({ type:"title", text:item.title });
+
+      if (item.title) {
+        blocks.push({ type:"title", text:item.title });
+      }
 
       if (!["無料配布","Web展示"].includes(item.category) && item.price) {
         blocks.push({ type:"price", text:item.price });
       }
 
-      if (item.desc) blocks.push({ type:"description", text:item.desc });
+      if (item.desc) {
+        blocks.push({ type:"description", text:item.desc });
+      }
 
       if (blocks.length) {
         const gap = Math.max(2, contentHeight * .025);
@@ -1866,25 +1948,18 @@
         const startY = headerHeight +
           (social ? 10 : Math.max(24 * printScale, safeY));
 
-        // ピクスク・ピクリエでは新刊も他カテゴリと同じ行高にする。
-        const sameNewReleaseRowHeight =
-          paper === "PICSQUARE" || paper === "PICREA";
-
+        // 全レイアウトで新刊カードを含め、行の高さを同じにする。
         const rows = [];
 
         items.forEach((item) => {
-          const isNewRelease = item.category === "新刊";
+          const category = item.category;
           let row = rows[rows.length - 1];
 
-          if (
-            !row ||
-            row.isNewRelease !== isNewRelease ||
-            row.items.length >= columns
-          ) {
+          if (!row || row.category !== category || row.items.length >= columns) {
             row = {
               items:[],
-              units:isNewRelease && !sameNewReleaseRowHeight ? 1.5 : 1,
-              isNewRelease
+              units:1,
+              category
             };
             rows.push(row);
           }
@@ -1926,7 +2001,7 @@
         rows.forEach((row) => {
           if (token !== renderToken) return;
 
-          const cardHeight = unitHeight * row.units;
+          const cardHeight = unitHeight;
 
           row.items.forEach((item, columnIndex) => {
             const x = bleedLeft + marginX +
