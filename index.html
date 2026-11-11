@@ -1442,15 +1442,32 @@
         const gapY = social ? social.gapY : Math.round(40 * scale);
         const padding = social ? social.padding : Math.round(25 * scale);
         const startY = headerHeight + (social ? 10 : Math.max(24 * scale, safeY));
-        const rows = Math.max(1, Math.ceil(items.length / columns));
+
+        // 新刊カードは横幅いっぱい
+        const rows = [];
+        items.forEach((item) => {
+          if (item.category === "新刊") {
+            rows.push([item]);
+            return;
+          }
+
+          let row = rows[rows.length - 1];
+          if (!row || row[0].category === "新刊" || row.length >= columns) {
+            row = [];
+            rows.push(row);
+          }
+          row.push(item);
+        });
+
+        const cardHeight = Math.max(
+          1,
+          (trimHeight - startY - marginY - gapY * (rows.length - 1)) / rows.length
+        );
         const cardWidth = Math.max(
           1,
           (trimWidth - marginX * 2 - gapX * (columns - 1)) / columns
         );
-        const cardHeight = Math.max(
-          1,
-          (trimHeight - startY - marginY - gapY * (rows - 1)) / rows
-        );
+        const fullCardWidth = Math.max(1, trimWidth - marginX * 2);
 
         const config = {
           social:Boolean(social),
@@ -1462,13 +1479,19 @@
           textScale:social ? social.cardScale : scale
         };
 
-        items.forEach((item, index) => {
+        rows.forEach((row, rowIndex) => {
           if (token !== renderToken) return;
-          const row = Math.floor(index / columns);
-          const column = index % columns;
-          const x = bleedLeft + marginX + column * (cardWidth + gapX);
-          const y = bleedTop + startY + row * (cardHeight + gapY);
-          drawCard(context, item, x, y, cardWidth, cardHeight, config, landscape);
+
+          const y = bleedTop + startY + rowIndex * (cardHeight + gapY);
+          const isNewReleaseRow = row.length === 1 && row[0].category === "新刊";
+
+          row.forEach((item, columnIndex) => {
+            const width = isNewReleaseRow ? fullCardWidth : cardWidth;
+            const x = bleedLeft + marginX +
+              (isNewReleaseRow ? 0 : columnIndex * (cardWidth + gapX));
+
+            drawCard(context, item, x, y, width, cardHeight, config, landscape);
+          });
         });
       } catch (error) {
         console.error("プレビュー描画エラー:", error);
