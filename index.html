@@ -1213,6 +1213,7 @@
         });
     }
 
+    // 自動縮小して、文字列を必ず1行で枠内に表示する。
     function fitSingleLine(context, text, box, options = {}) {
       if (!text) return;
 
@@ -1307,7 +1308,7 @@
           minFont:1,
           weight:"700",
           color:style.text,
-          align:"right",
+          align:"left",
           lineHeight:1
         });
 
@@ -1322,7 +1323,7 @@
           minFont:1,
           weight:"700",
           color:isR18 ? "#fff" : "#174b26",
-          align:"right",
+          align:"left",
           lineHeight:1
         });
 
@@ -1443,10 +1444,11 @@
         const padding = social ? social.padding : Math.round(25 * scale);
         const startY = headerHeight + (social ? 10 : Math.max(24 * scale, safeY));
 
+        // 新刊は全幅・高さ1.5単位、その他は2列・高さ1単位で配置する。
         const rows = [];
         items.forEach((item) => {
           if (item.category === "新刊") {
-            rows.push({ items:[item], units:2, fullWidth:true });
+            rows.push({ items:[item], units:1.5, fullWidth:true });
             return;
           }
 
