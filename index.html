@@ -30,7 +30,14 @@
       border-bottom: 1px solid #334155;
       background: #1e293b;
     }
-    .brand { display: flex; align-items: center; gap: 9px; min-width: 0; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+
     .brand-icon {
       display: grid;
       width: 34px;
@@ -39,9 +46,10 @@
       place-items: center;
       border-radius: 9px;
       background: linear-gradient(120deg, #f43f5e, #9333ea);
-      color: white;
+      color: #fff;
       font-size: 19px;
     }
+
     .brand h1 { margin: 0; font-size: 14px; line-height: 1.3; }
     .brand p {
       overflow: hidden;
@@ -51,19 +59,28 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
     .actions { display: flex; flex: 0 0 auto; gap: 6px; }
+
     .button {
       border: 0;
       border-radius: 7px;
       padding: 8px 10px;
-      color: white;
+      color: #fff;
       font-size: 11px;
       font-weight: 700;
     }
+
     .button-print { background: #475569; }
     .button-png { background: #059669; }
 
-    #mainLayout { display: flex; flex: 1 1 auto; min-height: 0; overflow: hidden; }
+    #mainLayout {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+    }
+
     #settingsPanel {
       display: flex;
       flex: 0 0 390px;
@@ -73,6 +90,7 @@
       border-right: 1px solid #334155;
       background: #1e293b;
     }
+
     .panel-heading {
       display: flex;
       flex: 0 0 auto;
@@ -84,6 +102,7 @@
       font-size: 12px;
       font-weight: 700;
     }
+
     .panel-heading small { color: #4ade80; font-size: 9px; }
     #settingsContent { flex: 1 1 auto; overflow: auto; padding: 14px; }
 
@@ -94,6 +113,7 @@
       padding: 12px;
       background: rgba(15, 23, 42, .65);
     }
+
     .section h2 { margin: 0 0 10px; color: #fb7185; font-size: 12px; }
     .field { display: block; margin-bottom: 9px; color: #94a3b8; font-size: 10px; }
     .field:last-child { margin-bottom: 0; }
@@ -109,7 +129,9 @@
       color: #e2e8f0;
       font-size: 11px;
     }
+
     .control:disabled { opacity: .5; }
+
     .color-control {
       width: 48px;
       height: 31px;
@@ -119,9 +141,20 @@
       padding: 3px;
       background: #1e293b;
     }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    .palette { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 7px;
+    }
+
     .palette button {
       display: flex;
       align-items: center;
@@ -135,7 +168,9 @@
       font-size: 10px;
       text-align: left;
     }
+
     .palette button.selected { outline: 2px solid #f43f5e; }
+
     .swatch {
       display: flex;
       width: 54px;
@@ -145,6 +180,7 @@
       border: 1px solid rgba(255,255,255,.25);
       border-radius: 4px;
     }
+
     .swatch span { flex: 1 1 0; }
 
     .check-row {
@@ -155,6 +191,7 @@
       color: #94a3b8;
       font-size: 10px;
     }
+
     .check-row input[type="checkbox"] { accent-color: #f43f5e; }
 
     .upload-box {
@@ -167,8 +204,20 @@
       text-align: center;
       cursor: pointer;
     }
-    .upload-box span { display: block; margin-top: 4px; font-size: 11px; font-weight: 700; }
-    .upload-box small { display: block; margin-top: 3px; color: #94a3b8; font-size: 9px; }
+
+    .upload-box span {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .upload-box small {
+      display: block;
+      margin-top: 3px;
+      color: #94a3b8;
+      font-size: 9px;
+    }
 
     .item-card {
       margin-bottom: 10px;
@@ -177,6 +226,7 @@
       padding: 10px;
       background: #0f172a;
     }
+
     .item-card-head {
       display: flex;
       align-items: center;
@@ -186,6 +236,7 @@
       font-size: 10px;
       font-weight: 700;
     }
+
     .item-card-head button {
       border: 0;
       border-radius: 5px;
@@ -194,8 +245,10 @@
       color: #e2e8f0;
       font-size: 10px;
     }
+
     .item-card-head button:disabled { opacity: .4; }
     .delete-item { margin-left: 4px; color: #fb7185 !important; }
+
     .add-item {
       width: 100%;
       border: 1px solid #475569;
@@ -218,21 +271,24 @@
       padding: 48px 20px 20px;
       background: #020617;
     }
+
     #canvasContainer {
       position: relative;
       flex: none;
       overflow: hidden;
       border: 1px solid #475569;
-      background: white;
+      background: #fff;
       box-shadow: 0 15px 40px rgba(0,0,0,.45);
       line-height: 0;
     }
+
     #canvasStage {
       position: absolute;
       top: 0;
       left: 0;
       transform-origin: top left;
     }
+
     #previewCanvas { display: block; }
 
     .guide {
@@ -241,6 +297,7 @@
       pointer-events: none;
       border: 1px dashed rgba(15,23,42,.85);
     }
+
     #trimGuide { outline: 1px solid rgba(255,255,255,.85); }
     #safeGuide { border-color: rgba(225,29,72,.95); }
     .hidden { display: none !important; }
@@ -257,6 +314,7 @@
       color: #cbd5e1;
       font-size: 10px;
     }
+
     #previewToolbar {
       position: absolute;
       z-index: 12;
@@ -272,6 +330,7 @@
       box-shadow: 0 6px 20px rgba(0,0,0,.35);
       font-size: 10px;
     }
+
     #previewToolbar button {
       border: 0;
       border-radius: 5px;
@@ -280,6 +339,7 @@
       color: #e2e8f0;
       font-size: 10px;
     }
+
     #previewToolbarDrag { cursor: grab; touch-action: none; }
 
     @media (max-width: 767px) {
@@ -291,7 +351,11 @@
         border: 0;
       }
       #settingsContent { overflow: visible; }
-      #workspace { width: 100%; height: 75vh; min-height: 480px; }
+      #workspace {
+        width: 100%;
+        height: 75vh;
+        min-height: 480px;
+      }
       #previewToolbar {
         top: auto;
         right: 10px;
@@ -350,7 +414,7 @@
         </section>
 
         <section class="section">
-          <h2>背景デザイン・6色配色</h2>
+          <h2>背景デザイン・配色</h2>
           <label class="field">背景の種類
             <select id="bgTypeSelect" name="backgroundType" class="control">
               <option value="palette" selected>配色パレットの最も明るい色</option>
@@ -359,10 +423,10 @@
             </select>
           </label>
           <div class="field">
-            配色パターン（6色・全12パターン）
+            添付された配色パターン（4種類）
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              最明色＝全体背景、最暗色＝ヘッダー、2番目に暗い色＝年齢区分帯、残り4色＝カテゴリ帯です。カード本体は白です。
+              最明色＝全体背景、最暗色＝ヘッダー・新刊、2番目に暗い色＝年齢区分帯です。カード本体は白です。
             </small>
           </div>
           <div id="customBgControls" class="hidden">
@@ -372,7 +436,7 @@
           </div>
           <div id="singleColorControls" class="hidden">
             <label class="field">背景色
-              <input id="bgColorPicker" name="backgroundColor" type="color" value="#FFDAD4" class="color-control">
+              <input id="bgColorPicker" name="backgroundColor" type="color" value="#FFA4B9" class="color-control">
             </label>
           </div>
         </section>
@@ -399,10 +463,10 @@
           <h2>ヘッダー配色</h2>
           <div class="two-col">
             <label class="field">背景色
-              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#720001" class="color-control">
+              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#6E4B1F" class="color-control">
             </label>
             <label class="field">アクセント色
-              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#92D1C6" class="color-control">
+              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#9C1F11" class="color-control">
             </label>
           </div>
         </section>
@@ -423,7 +487,7 @@
           <label class="check-row">
             イベント情報の背景色
             <input id="eventInfoBgEnabled" name="eventInfoBgEnabled" type="checkbox">
-            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#720001" class="color-control">
+            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#6E4B1F" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -442,7 +506,7 @@
           <label class="check-row">
             スペース番号の背景色
             <input id="spaceInfoBgEnabled" name="spaceInfoBgEnabled" type="checkbox">
-            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#17483E" class="color-control">
+            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#6E4B1F" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -461,7 +525,7 @@
           <label class="check-row">
             サークル名の背景色
             <input id="circleInfoBgEnabled" name="circleInfoBgEnabled" type="checkbox">
-            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#720001" class="color-control">
+            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#6E4B1F" class="color-control">
           </label>
         </section>
 
@@ -547,58 +611,42 @@
     const PALETTES = [
       {
         name:"パターン1",
-        colors:["#10A291","#A21021","#92D1C6","#8A5551","#22443F","#5E0009"]
+        colors:["#9C1F11", "#B64466", "#CAB49B", "#AE7A70", "#FFA4B9", "#6E4B1F"]
       },
       {
         name:"パターン2",
-        colors:["#97399D","#3F9D39","#54005A","#A5F59D","#EDB2EF","#7FCD78"]
+        colors:["#9C5B11", "#9C1611", "#989C11", "#FFD8AC", "#5C0E0A", "#BBC05B"]
       },
       {
         name:"パターン3",
-        colors:["#C83C43","#3CC8C1","#713030","#005E5A","#FFAAA6","#6EA39F"]
+        colors:["#119C5B", "#CBF1C7", "#004C4F", "#00793F", "#93DC8E", "#48BABE"]
       },
       {
         name:"パターン4",
-        colors:["#3A86C8","#C87C3A","#B1D5F9","#BB9E88","#0D5185","#472A11"]
+        colors:["#11349C", "#81A5B5", "#D4D9FF", "#4D6497", "#00364E", "#5C55CD"]
       },
       {
         name:"パターン5",
-        colors:["#EC0426","#04ECCA","#FFDAD4","#17483E","#720001","#7CAEA1"]
+        colors:["#EC8B04", "#FBBA7D", "#632F00", "#8B561D", "#C26800", "#AF8D6F"]
       },
       {
         name:"パターン6",
-        colors:["#EC8004","#0470EC","#904100","#013C85","#FFE1C1","#5575A3"]
+        colors:["#04ECBE", "#84CAB3", "#BFF8E5", "#005F46", "#00A982", "#4D8473"]
       },
       {
         name:"パターン7",
-        colors:["#EC1304","#04DDEC","#FFD1C6","#004146","#A10000","#538A90"]
+        colors:["#0704EC", "#1D48C0", "#DBEBFF", "#112B70", "#96BCFF", "#5388FF"]
       },
       {
         name:"パターン8",
-        colors:["#0704EC","#E9EC04","#89B3FF","#353500","#D9EAFF","#5E5E00"]
-      },
-      {
-        name:"パターン9",
-        colors:["#EC8B04","#FBBA7D","#632F00","#8B561D","#C26800","#AF8D6F"]
-      },
-      {
-        name:"パターン10",
-        colors:["#04ECBE","#84CAB3","#BFF8E5","#005F46","#00A982","#4D8473"]
-      },
-      {
-        name:"パターン11",
-        colors:["#0704EC","#1D48C0","#DBEBFF","#112B70","#96BCFF","#5388FF"]
-      },
-      {
-        name:"パターン12",
-        colors:["#EC0426","#E39790","#9B423E","#FFC6BF","#E1655E","#810002"]
+        colors:["#EC0426", "#E39790", "#9B423E", "#FFC6BF", "#E1655E", "#810002"]
       }
     ].map((palette) => {
       const background = getLightestColor(palette.colors);
       const header = getDarkestColor(palette.colors);
       const ageBandColor = getSecondDarkestColor(palette.colors);
 
-      // 全体背景色と年齢区分色を除く4色をカテゴリ帯に割り当てる。
+      // 新刊は最暗色を固定使用。ほかのカテゴリは残りの色を割り当てる。
       const categoryColors = palette.colors.filter((color) => {
         const normalized = color.toUpperCase();
         return normalized !== background.toUpperCase() &&
@@ -724,7 +772,9 @@
 
     function getEl(id) {
       const element = document.getElementById(id);
-      if (!element) throw new Error(`必要なHTML要素がありません: #${id}`);
+      if (!element) {
+        throw new Error(`必要なHTML要素がありません: #${id}`);
+      }
       return element;
     }
 
@@ -735,12 +785,13 @@
     function getCategoryStyle(category) {
       const colors = selectedPalette.categoryColors;
       const colorByCategory = {
-        "新刊":colors[0],
-        "既刊":colors[1],
-        "無料配布":colors[2],
-        "Web展示":colors[3]
+        "新刊":selectedPalette.header,
+        "既刊":colors.find((color) => color !== selectedPalette.header) || colors[0],
+        "無料配布":colors.filter((color) => color !== selectedPalette.header)[1] || colors[0],
+        "Web展示":colors.filter((color) => color !== selectedPalette.header)[2] || colors[0]
       };
-      const color = colorByCategory[category] || colors[0];
+
+      const color = colorByCategory[category] || selectedPalette.header;
 
       return {
         background:color,
@@ -797,10 +848,10 @@
       getEl("headerBgColor").value = palette.header;
       getEl("headerAccentColor").value = palette.categoryColors[0];
 
-      const headerTextColor = getReadableTextColor(palette.header);
-      getEl("eventInfoTextColor").value = headerTextColor;
-      getEl("spaceInfoTextColor").value = headerTextColor;
-      getEl("circleInfoTextColor").value = headerTextColor;
+      const textColor = getReadableTextColor(palette.header);
+      getEl("eventInfoTextColor").value = textColor;
+      getEl("spaceInfoTextColor").value = textColor;
+      getEl("circleInfoTextColor").value = textColor;
 
       getEl("eventInfoBgColor").value = palette.header;
       getEl("spaceInfoBgColor").value = palette.header;
@@ -838,10 +889,8 @@
           });
           button.classList.add("selected");
           applyPalette(preset);
-
-          const layoutLabel = getLayoutLabel();
           getEl("paperSpecLabel").textContent =
-            `${layoutLabel}・${selectedPalette.name}`;
+            `${getLayoutLabel()}・${selectedPalette.name}`;
         });
 
         root.appendChild(button);
@@ -919,7 +968,8 @@
       updateGuides();
 
       const label = getLayoutLabel();
-      getEl("paperSpecLabel").textContent = `${label}・${selectedPalette.name}`;
+      getEl("paperSpecLabel").textContent =
+        `${label}・${selectedPalette.name}`;
       getEl("dimensionDisplay").textContent = label;
       getEl("layoutHelp").textContent =
         "ヘッダー文字は指定サイズを上限に、領域に合わせて自動調整します。";
@@ -1002,7 +1052,7 @@
             </select>
           </label>
 
-          <label class="field">価格（無料配布・Web展示は空欄）
+          <label class="field">価格
             <input id="item-${index}-price" name="item-${index}-price" class="control" type="text" data-index="${index}" data-key="price"
               value="${escapeHTML(item.price)}" ${["無料配布","Web展示"].includes(item.category) ? "disabled" : ""}>
           </label>
@@ -1138,9 +1188,8 @@
       const src = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(
-          new Error(`画像を読み込めませんでした: ${file.name}`)
-        );
+        reader.onerror = () =>
+          reject(new Error(`画像を読み込めませんでした: ${file.name}`));
         reader.readAsDataURL(file);
       });
 
@@ -1335,10 +1384,10 @@
       const family = options.family || "sans-serif";
       const weight = options.weight || "400";
       const maxFont = Math.max(1, Number(options.maxFont) || 20);
-      const minFont = Math.max(1, Math.min(
-        maxFont,
-        Number(options.minFont) || 1
-      ));
+      const minFont = Math.max(
+        1,
+        Math.min(maxFont, Number(options.minFont) || 1)
+      );
       const width = Math.max(1, box.width);
       const height = Math.max(1, box.height);
       const verticalRatio = options.verticalRatio || 1.15;
@@ -1529,10 +1578,17 @@
       const padding = config.padding;
       const categoryStyle = getCategoryStyle(item.category);
 
-      // カード本体は白。
+      // 頒布物カード本体は白。
       roundRect(
-        context, x, y, width, height,
-        config.radius, "#FFFFFF", "#cbd5e1", config.borderWidth
+        context,
+        x,
+        y,
+        width,
+        height,
+        config.radius,
+        "#FFFFFF",
+        "#cbd5e1",
+        config.borderWidth
       );
 
       context.save();
@@ -1556,7 +1612,7 @@
         Math.max(15, width * .055)
       );
 
-      // カテゴリ帯は背景色・年齢区分帯と異なるパレット色。
+      // 新刊のカテゴリ色は常にパレット内の最暗色。
       context.fillStyle = categoryStyle.background;
       context.fillRect(x, y, width, categoryHeight);
 
@@ -1714,8 +1770,15 @@
       context.restore();
 
       roundRect(
-        context, x, y, width, height,
-        config.radius, null, "#cbd5e1", config.borderWidth
+        context,
+        x,
+        y,
+        width,
+        height,
+        config.radius,
+        null,
+        "#cbd5e1",
+        config.borderWidth
       );
     }
 
@@ -1732,12 +1795,11 @@
         drawBackground(context);
 
         const social = SOCIAL_LAYOUTS[paper] || null;
-        const landscape = orientation === "LANDSCAPE";
         const headerHeight = social
           ? social.header
-          : Math.round(trimHeight * (landscape ? .17 : .15));
+          : Math.round(trimHeight * (orientation === "LANDSCAPE" ? .17 : .15));
 
-        // ヘッダー背景はパレット内の最も暗い色。
+        // イベント・サークル情報のヘッダー背景はパレット内の最暗色。
         context.fillStyle = getEl("headerBgColor").value || selectedPalette.header;
         context.fillRect(
           0,
@@ -1759,16 +1821,16 @@
           accentHeight
         );
 
-        const headerSizes = HEADER_FONT_SIZES[paper];
+        const sizes = HEADER_FONT_SIZES[paper];
         const defaultHeaderText = getReadableTextColor(selectedPalette.header);
 
         drawHeader(
           context,
           social,
           headerHeight,
-          getHeaderStyle("eventInfo", headerSizes.event, defaultHeaderText),
-          getHeaderStyle("spaceInfo", headerSizes.space, defaultHeaderText),
-          getHeaderStyle("circleInfo", headerSizes.circle, defaultHeaderText)
+          getHeaderStyle("eventInfo", sizes.event, defaultHeaderText),
+          getHeaderStyle("spaceInfo", sizes.space, defaultHeaderText),
+          getHeaderStyle("circleInfo", sizes.circle, defaultHeaderText)
         );
 
         const columns = 2;
@@ -1781,7 +1843,7 @@
         const startY = headerHeight +
           (social ? 10 : Math.max(24 * printScale, safeY));
 
-        // 同じ種類のカードを1行に最大2枚配置。新刊行は1.5倍の高さ。
+        // 新刊は常に最暗色のカテゴリ帯。1行最大2枚で、新刊行は1.5倍の高さ。
         const rows = [];
 
         items.forEach((item) => {
@@ -1812,6 +1874,7 @@
           (trimHeight - startY - marginY - gapY * (rows.length - 1)) /
             totalUnits
         );
+
         const cardWidth = Math.max(
           1,
           (trimWidth - marginX * 2 - gapX) / columns
@@ -1863,7 +1926,8 @@
       container.style.width = `${outputWidth * safeScale}px`;
       container.style.height = `${outputHeight * safeScale}px`;
 
-      getEl("zoomDisplay").textContent = `表示 ${Math.round(safeScale * 100)}%`;
+      getEl("zoomDisplay").textContent =
+        `表示 ${Math.round(safeScale * 100)}%`;
       getEl("zoomSlider").value = String(
         Math.max(1, Math.min(200, Math.round(safeScale * 100)))
       );
@@ -1873,6 +1937,7 @@
       const workspace = getEl("workspace");
       const availableWidth = Math.max(1, workspace.clientWidth - 50);
       const availableHeight = Math.max(1, workspace.clientHeight - 75);
+
       applyScale(Math.min(
         availableWidth / outputWidth,
         availableHeight / outputHeight
