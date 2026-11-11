@@ -39,7 +39,7 @@
       place-items: center;
       border-radius: 9px;
       background: linear-gradient(120deg, #f43f5e, #9333ea);
-      color: #fff;
+      color: white;
       font-size: 19px;
     }
     .brand h1 { margin: 0; font-size: 14px; line-height: 1.3; }
@@ -56,7 +56,7 @@
       border: 0;
       border-radius: 7px;
       padding: 8px 10px;
-      color: #fff;
+      color: white;
       font-size: 11px;
       font-weight: 700;
     }
@@ -121,28 +121,31 @@
     }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
-    .palette { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+    .palette { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
     .palette button {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       min-width: 0;
       border: 1px solid #334155;
       border-radius: 6px;
-      padding: 5px;
+      padding: 6px;
       background: #0f172a;
       color: #cbd5e1;
-      font-size: 9px;
+      font-size: 10px;
       text-align: left;
     }
     .palette button.selected { outline: 2px solid #f43f5e; }
     .swatch {
-      width: 34px;
-      height: 13px;
+      display: flex;
+      width: 54px;
+      height: 16px;
       flex: 0 0 auto;
+      overflow: hidden;
       border: 1px solid rgba(255,255,255,.25);
       border-radius: 4px;
     }
+    .swatch span { flex: 1 1 0; }
 
     .check-row {
       display: flex;
@@ -220,7 +223,7 @@
       flex: none;
       overflow: hidden;
       border: 1px solid #475569;
-      background: #fff;
+      background: white;
       box-shadow: 0 15px 40px rgba(0,0,0,.45);
       line-height: 0;
     }
@@ -281,7 +284,12 @@
 
     @media (max-width: 767px) {
       #mainLayout { display: block; overflow: auto; }
-      #settingsPanel { width: 100%; max-height: none; overflow: visible; border: 0; }
+      #settingsPanel {
+        width: 100%;
+        max-height: none;
+        overflow: visible;
+        border: 0;
+      }
       #settingsContent { overflow: visible; }
       #workspace { width: 100%; height: 75vh; min-height: 480px; }
       #previewToolbar {
@@ -342,19 +350,19 @@
         </section>
 
         <section class="section">
-          <h2>背景デザイン・規定カラー</h2>
+          <h2>背景デザイン・6色配色</h2>
           <label class="field">背景の種類
             <select id="bgTypeSelect" name="backgroundType" class="control">
-              <option value="palette" selected>配色パレットの最淡色</option>
+              <option value="palette" selected>配色パレットの最も明るい色</option>
               <option value="custom">背景画像</option>
               <option value="color">単色カラー</option>
             </select>
           </label>
           <div class="field">
-            規定カラー
+            配色パターン（6色・全12パターン）
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              全体背景はパレット内の最淡色、ヘッダーは最暗色、カード本体は白です。
+              最明色＝全体背景、最暗色＝ヘッダー、2番目に暗い色＝年齢区分帯、残り4色＝カテゴリ帯です。カード本体は白です。
             </small>
           </div>
           <div id="customBgControls" class="hidden">
@@ -364,7 +372,7 @@
           </div>
           <div id="singleColorControls" class="hidden">
             <label class="field">背景色
-              <input id="bgColorPicker" name="backgroundColor" type="color" value="#E0D68A" class="color-control">
+              <input id="bgColorPicker" name="backgroundColor" type="color" value="#FFDAD4" class="color-control">
             </label>
           </div>
         </section>
@@ -391,10 +399,10 @@
           <h2>ヘッダー配色</h2>
           <div class="two-col">
             <label class="field">背景色
-              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#320A28" class="color-control">
+              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#720001" class="color-control">
             </label>
             <label class="field">アクセント色
-              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#8E443D" class="color-control">
+              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#92D1C6" class="color-control">
             </label>
           </div>
         </section>
@@ -415,7 +423,7 @@
           <label class="check-row">
             イベント情報の背景色
             <input id="eventInfoBgEnabled" name="eventInfoBgEnabled" type="checkbox">
-            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#320A28" class="color-control">
+            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#720001" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -434,7 +442,7 @@
           <label class="check-row">
             スペース番号の背景色
             <input id="spaceInfoBgEnabled" name="spaceInfoBgEnabled" type="checkbox">
-            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#511730" class="color-control">
+            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#17483E" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -453,7 +461,7 @@
           <label class="check-row">
             サークル名の背景色
             <input id="circleInfoBgEnabled" name="circleInfoBgEnabled" type="checkbox">
-            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#320A28" class="color-control">
+            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#720001" class="color-control">
           </label>
         </section>
 
@@ -481,6 +489,7 @@
         <span> | </span>
         <span id="dimensionDisplay"></span>
       </div>
+
       <div id="previewToolbar">
         <button id="previewToolbarDrag" type="button" aria-label="操作バーを移動">↕</button>
         <button id="fitCanvasBtn" type="button">全体表示</button>
@@ -488,6 +497,7 @@
           <input id="zoomSlider" name="previewZoom" type="range" min="1" max="200" value="100" style="width:70px">
         </label>
       </div>
+
       <div id="canvasContainer">
         <div id="canvasStage">
           <canvas id="previewCanvas"></canvas>
@@ -505,44 +515,104 @@
       const channels = hex.replace("#", "").match(/.{2}/g)
         .map((channel) => parseInt(channel, 16) / 255);
       const linear = channels.map((value) =>
-        value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+        value <= 0.04045
+          ? value / 12.92
+          : ((value + 0.055) / 1.055) ** 2.4
       );
       return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
     }
 
     function getLightestColor(colors) {
       return colors.reduce((lightest, color) =>
-        getRelativeLuminance(color) > getRelativeLuminance(lightest) ? color : lightest
+        getRelativeLuminance(color) > getRelativeLuminance(lightest)
+          ? color
+          : lightest
       );
     }
 
     function getDarkestColor(colors) {
       return colors.reduce((darkest, color) =>
-        getRelativeLuminance(color) < getRelativeLuminance(darkest) ? color : darkest
+        getRelativeLuminance(color) < getRelativeLuminance(darkest)
+          ? color
+          : darkest
       );
     }
 
+    function getSecondDarkestColor(colors) {
+      return [...colors].sort(
+        (a, b) => getRelativeLuminance(a) - getRelativeLuminance(b)
+      )[1];
+    }
+
     const PALETTES = [
-      { name:"パターン1", colors:["#320A28","#511730","#8E443D","#CB9173","#E0D68A"] },
-      { name:"パターン2", colors:["#91F9E5","#76F7BF","#5FDD9D","#499167","#3F4531"] },
-      { name:"パターン3", colors:["#DDD78D","#DCBF85","#8B635C","#60594D","#93A29B"] },
-      { name:"パターン4", colors:["#EA526F","#E76B74","#D7AF70","#937D64","#585B56"] },
-      { name:"パターン5", colors:["#BA2D0B","#D5F2E3","#73BA9B","#003E1F","#01110A"] },
-      { name:"パターン6", colors:["#DCD6F7","#A6B1E1","#B4869F","#985F6F","#4E4C67"] },
-      { name:"パターン7", colors:["#FAF3DD","#C8D5B9","#8FC0A9","#68B0AB","#696D7D"] },
-      { name:"パターン8", colors:["#504746","#B89685","#BFADA3","#FBB7C0","#B6244F"] },
-      { name:"パターン9", colors:["#334139","#1E2D24","#C52184","#E574BC","#F9B4ED"] },
-      { name:"パターン10", colors:["#003844","#006C67","#F194B4","#FFB100","#FFEBC6"] },
-      { name:"パターン11", colors:["#04151F","#183A37","#EFD6AC","#C44900","#432534"] },
-      { name:"パターン12", colors:["#BCABAE","#0F0F0F","#2D2E2E","#716969","#FBFBFB"] }
-    ].map((palette) => ({
-      ...palette,
-      background:getLightestColor(palette.colors),
-      header:getDarkestColor(palette.colors),
-      main:palette.colors[0],
-      sub:palette.colors[1],
-      accent:palette.colors[2]
-    }));
+      {
+        name:"パターン1",
+        colors:["#10A291","#A21021","#92D1C6","#8A5551","#22443F","#5E0009"]
+      },
+      {
+        name:"パターン2",
+        colors:["#97399D","#3F9D39","#54005A","#A5F59D","#EDB2EF","#7FCD78"]
+      },
+      {
+        name:"パターン3",
+        colors:["#C83C43","#3CC8C1","#713030","#005E5A","#FFAAA6","#6EA39F"]
+      },
+      {
+        name:"パターン4",
+        colors:["#3A86C8","#C87C3A","#B1D5F9","#BB9E88","#0D5185","#472A11"]
+      },
+      {
+        name:"パターン5",
+        colors:["#EC0426","#04ECCA","#FFDAD4","#17483E","#720001","#7CAEA1"]
+      },
+      {
+        name:"パターン6",
+        colors:["#EC8004","#0470EC","#904100","#013C85","#FFE1C1","#5575A3"]
+      },
+      {
+        name:"パターン7",
+        colors:["#EC1304","#04DDEC","#FFD1C6","#004146","#A10000","#538A90"]
+      },
+      {
+        name:"パターン8",
+        colors:["#0704EC","#E9EC04","#89B3FF","#353500","#D9EAFF","#5E5E00"]
+      },
+      {
+        name:"パターン9",
+        colors:["#EC8B04","#FBBA7D","#632F00","#8B561D","#C26800","#AF8D6F"]
+      },
+      {
+        name:"パターン10",
+        colors:["#04ECBE","#84CAB3","#BFF8E5","#005F46","#00A982","#4D8473"]
+      },
+      {
+        name:"パターン11",
+        colors:["#0704EC","#1D48C0","#DBEBFF","#112B70","#96BCFF","#5388FF"]
+      },
+      {
+        name:"パターン12",
+        colors:["#EC0426","#E39790","#9B423E","#FFC6BF","#E1655E","#810002"]
+      }
+    ].map((palette) => {
+      const background = getLightestColor(palette.colors);
+      const header = getDarkestColor(palette.colors);
+      const ageBandColor = getSecondDarkestColor(palette.colors);
+
+      // 全体背景色と年齢区分色を除く4色をカテゴリ帯に割り当てる。
+      const categoryColors = palette.colors.filter((color) => {
+        const normalized = color.toUpperCase();
+        return normalized !== background.toUpperCase() &&
+          normalized !== ageBandColor.toUpperCase();
+      });
+
+      return {
+        ...palette,
+        background,
+        header,
+        ageBandColor,
+        categoryColors
+      };
+    });
 
     const FONT_FAMILIES = [
       { label:"Noto Sans JP", value:'"Noto Sans JP", sans-serif' },
@@ -554,22 +624,50 @@
     ];
 
     const PRINT_SPECS = {
-      A3: { widthMm:303, heightMm:426, widthPx:2386, heightPx:3354, trimWidthMm:297, trimHeightMm:420 },
-      A4: { widthMm:216, heightMm:303, widthPx:2976, heightPx:4175, trimWidthMm:210, trimHeightMm:297 }
+      A3: {
+        widthMm:303, heightMm:426,
+        widthPx:2386, heightPx:3354,
+        trimWidthMm:297, trimHeightMm:420
+      },
+      A4: {
+        widthMm:216, heightMm:303,
+        widthPx:2976, heightPx:4175,
+        trimWidthMm:210, trimHeightMm:297
+      }
     };
 
     const SOCIAL_PRESETS = {
-      WEB_PORTRAIT: { width:960, height:1280, orientation:"PORTRAIT", label:"X用縦書き" },
-      WEB_LANDSCAPE: { width:1200, height:675, orientation:"LANDSCAPE", label:"X用横書き" },
-      PICSQUARE: { width:500, height:1000, orientation:"PORTRAIT", label:"ピクスク用" },
-      PICREA: { width:800, height:1600, orientation:"PORTRAIT", label:"ピクリエ用" }
+      WEB_PORTRAIT: {
+        width:960, height:1280, orientation:"PORTRAIT", label:"X用縦書き"
+      },
+      WEB_LANDSCAPE: {
+        width:1200, height:675, orientation:"LANDSCAPE", label:"X用横書き"
+      },
+      PICSQUARE: {
+        width:500, height:1000, orientation:"PORTRAIT", label:"ピクスク用"
+      },
+      PICREA: {
+        width:800, height:1600, orientation:"PORTRAIT", label:"ピクリエ用"
+      }
     };
 
     const SOCIAL_LAYOUTS = {
-      WEB_PORTRAIT: { header:250, marginX:28, marginY:22, gapX:16, gapY:16, padding:12, cardScale:.55, categoryBand:46, ageBand:28 },
-      WEB_LANDSCAPE: { header:160, marginX:28, marginY:18, gapX:16, gapY:16, padding:11, cardScale:.48, categoryBand:38, ageBand:24 },
-      PICSQUARE: { header:143, marginX:16, marginY:16, gapX:12, gapY:12, padding:8, cardScale:.35, categoryBand:34, ageBand:21 },
-      PICREA: { header:270, marginX:24, marginY:22, gapX:16, gapY:16, padding:12, cardScale:.50, categoryBand:44, ageBand:28 }
+      WEB_PORTRAIT: {
+        header:250, marginX:28, marginY:22, gapX:16, gapY:16,
+        padding:12, cardScale:.55, categoryBand:46, ageBand:28
+      },
+      WEB_LANDSCAPE: {
+        header:160, marginX:28, marginY:18, gapX:16, gapY:16,
+        padding:11, cardScale:.48, categoryBand:38, ageBand:24
+      },
+      PICSQUARE: {
+        header:143, marginX:16, marginY:16, gapX:12, gapY:12,
+        padding:8, cardScale:.35, categoryBand:34, ageBand:21
+      },
+      PICREA: {
+        header:270, marginX:24, marginY:22, gapX:16, gapY:16,
+        padding:12, cardScale:.50, categoryBand:44, ageBand:28
+      }
     };
 
     const HEADER_FONT_SIZES = {
@@ -615,6 +713,7 @@
         priceFontFamily:DEFAULT_FONT_FAMILY,
         descFontFamily:DEFAULT_FONT_FAMILY,
         image:null,
+        imageSrc:"",
         imageWidth:0,
         imageHeight:0,
         noImage:false
@@ -633,18 +732,8 @@
       return getRelativeLuminance(hex) > 0.179 ? "#1e293b" : "#ffffff";
     }
 
-    function getPaletteColorsExcludingBackground() {
-      const background = selectedPalette.background.toUpperCase();
-      const colors = selectedPalette.colors.filter(
-        (color) => color.toUpperCase() !== background
-      );
-
-      // 念のため、全色が背景色と同じ場合に備えたフォールバック。
-      return colors.length ? colors : selectedPalette.colors;
-    }
-
     function getCategoryStyle(category) {
-      const colors = getPaletteColorsExcludingBackground();
+      const colors = selectedPalette.categoryColors;
       const colorByCategory = {
         "新刊":colors[0],
         "既刊":colors[1],
@@ -660,9 +749,13 @@
     }
 
     function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-      })[char]);
+      return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#39;"
+      })[character]);
     }
 
     function fontFamilyOptions(selected) {
@@ -671,10 +764,96 @@
       ).join("");
     }
 
+    function initializeHeaderFontControls() {
+      [
+        "eventInfoFontFamily",
+        "spaceInfoFontFamily",
+        "circleInfoFontFamily"
+      ].forEach((id) => {
+        const select = getEl(id);
+        select.innerHTML = fontFamilyOptions(DEFAULT_FONT_FAMILY);
+        select.value = DEFAULT_FONT_FAMILY;
+      });
+    }
+
+    function getLayoutLabel() {
+      const socialPreset = SOCIAL_PRESETS[paper];
+
+      if (socialPreset) {
+        return `${socialPreset.label} (${outputWidth} × ${outputHeight}px)`;
+      }
+
+      return `${paper}${orientation === "LANDSCAPE" ? "横" : "縦"} 塗り足し込み ${outputWidth} × ${outputHeight}px`;
+    }
+
+    function applyPalette(palette) {
+      selectedPalette = palette;
+
+      getEl("bgTypeSelect").value = "palette";
+      getEl("customBgControls").classList.add("hidden");
+      getEl("singleColorControls").classList.add("hidden");
+      getEl("bgColorPicker").value = palette.background;
+
+      getEl("headerBgColor").value = palette.header;
+      getEl("headerAccentColor").value = palette.categoryColors[0];
+
+      const headerTextColor = getReadableTextColor(palette.header);
+      getEl("eventInfoTextColor").value = headerTextColor;
+      getEl("spaceInfoTextColor").value = headerTextColor;
+      getEl("circleInfoTextColor").value = headerTextColor;
+
+      getEl("eventInfoBgColor").value = palette.header;
+      getEl("spaceInfoBgColor").value = palette.header;
+      getEl("circleInfoBgColor").value = palette.header;
+
+      renderCanvas();
+    }
+
+    function buildPalette() {
+      const root = getEl("presetColorPalette");
+      root.innerHTML = "";
+
+      PALETTES.forEach((preset) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.title = `${preset.name}（6色）`;
+
+        const swatch = document.createElement("span");
+        swatch.className = "swatch";
+
+        preset.colors.forEach((color) => {
+          const segment = document.createElement("span");
+          segment.style.backgroundColor = color;
+          swatch.appendChild(segment);
+        });
+
+        const label = document.createElement("span");
+        label.textContent = preset.name;
+        button.append(swatch, label);
+        button.classList.toggle("selected", preset.name === selectedPalette.name);
+
+        button.addEventListener("click", () => {
+          root.querySelectorAll("button").forEach((element) => {
+            element.classList.remove("selected");
+          });
+          button.classList.add("selected");
+          applyPalette(preset);
+
+          const layoutLabel = getLayoutLabel();
+          getEl("paperSpecLabel").textContent =
+            `${layoutLabel}・${selectedPalette.name}`;
+        });
+
+        root.appendChild(button);
+      });
+
+      applyPalette(selectedPalette);
+    }
+
     function initialize() {
       try {
-        buildPalette();
         initializeHeaderFontControls();
+        buildPalette();
         renderItems();
         bindEvents();
         updateLayout();
@@ -687,59 +866,6 @@
         const label = document.getElementById("paperSpecLabel");
         if (label) label.textContent = `初期化エラー: ${error.message}`;
       }
-    }
-
-    function initializeHeaderFontControls() {
-      ["eventInfoFontFamily", "spaceInfoFontFamily", "circleInfoFontFamily"].forEach((id) => {
-        const select = getEl(id);
-        select.innerHTML = fontFamilyOptions(DEFAULT_FONT_FAMILY);
-        select.value = DEFAULT_FONT_FAMILY;
-      });
-    }
-
-    function buildPalette() {
-      const root = getEl("presetColorPalette");
-      root.innerHTML = "";
-
-      PALETTES.forEach((preset) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.title = `${preset.name}（5色）`;
-
-        const stops = preset.colors.map((color, index) =>
-          `${color} ${index * 20}% ${(index + 1) * 20}%`
-        ).join(",");
-        button.innerHTML =
-          `<span class="swatch" style="background:linear-gradient(90deg,${stops})"></span><span>${preset.name}</span>`;
-        button.classList.toggle("selected", preset.name === selectedPalette.name);
-
-        button.addEventListener("click", () => {
-          selectedPalette = preset;
-          root.querySelectorAll("button").forEach((element) => element.classList.remove("selected"));
-
-          button.classList.add("selected");
-          getEl("bgTypeSelect").value = "palette";
-          getEl("customBgControls").classList.add("hidden");
-          getEl("singleColorControls").classList.add("hidden");
-          getEl("bgColorPicker").value = preset.background;
-
-          getEl("headerBgColor").value = preset.header;
-          getEl("headerAccentColor").value = preset.accent;
-
-          const textColor = getReadableTextColor(preset.header);
-          getEl("eventInfoTextColor").value = textColor;
-          getEl("spaceInfoTextColor").value = textColor;
-          getEl("circleInfoTextColor").value = textColor;
-
-          getEl("eventInfoBgColor").value = preset.header;
-          getEl("spaceInfoBgColor").value = preset.sub;
-          getEl("circleInfoBgColor").value = preset.header;
-
-          renderCanvas();
-        });
-
-        root.appendChild(button);
-      });
     }
 
     function updateLayout() {
@@ -767,17 +893,17 @@
         outputWidth = landscape ? spec.heightPx : spec.widthPx;
         outputHeight = landscape ? spec.widthPx : spec.heightPx;
 
-        const outWmm = landscape ? spec.heightMm : spec.widthMm;
-        const outHmm = landscape ? spec.widthMm : spec.heightMm;
-        const trimWmm = landscape ? spec.trimHeightMm : spec.trimWidthMm;
-        const trimHmm = landscape ? spec.trimWidthMm : spec.trimHeightMm;
+        const outputWidthMm = landscape ? spec.heightMm : spec.widthMm;
+        const outputHeightMm = landscape ? spec.widthMm : spec.heightMm;
+        const trimWidthMm = landscape ? spec.trimHeightMm : spec.trimWidthMm;
+        const trimHeightMm = landscape ? spec.trimWidthMm : spec.trimHeightMm;
 
-        trimWidth = Math.round(trimWmm * outputWidth / outWmm);
-        trimHeight = Math.round(trimHmm * outputHeight / outHmm);
+        trimWidth = Math.round(trimWidthMm * outputWidth / outputWidthMm);
+        trimHeight = Math.round(trimHeightMm * outputHeight / outputHeightMm);
         bleedLeft = Math.floor((outputWidth - trimWidth) / 2);
         bleedTop = Math.floor((outputHeight - trimHeight) / 2);
-        safeX = Math.ceil(BLEED_MM * trimWidth / trimWmm);
-        safeY = Math.ceil(BLEED_MM * trimHeight / trimHmm);
+        safeX = Math.ceil(BLEED_MM * trimWidth / trimWidthMm);
+        safeY = Math.ceil(BLEED_MM * trimHeight / trimHeightMm);
       }
 
       canvas.width = outputWidth;
@@ -792,10 +918,7 @@
 
       updateGuides();
 
-      const label = socialPreset
-        ? `${socialPreset.label} (${outputWidth} × ${outputHeight}px)`
-        : `${paper}${orientation === "LANDSCAPE" ? "横" : "縦"} 塗り足し込み ${outputWidth} × ${outputHeight}px`;
-
+      const label = getLayoutLabel();
       getEl("paperSpecLabel").textContent = `${label}・${selectedPalette.name}`;
       getEl("dimensionDisplay").textContent = label;
       getEl("layoutHelp").textContent =
@@ -920,14 +1043,19 @@
 
           if (key === "descriptionFontSize") {
             const size = Number.parseInt(input.value, 10);
-            items[index][key] = Number.isFinite(size) ? Math.min(100, Math.max(8, size)) : 38;
+            items[index][key] = Number.isFinite(size)
+              ? Math.min(100, Math.max(8, size))
+              : 38;
           } else {
             items[index][key] = input.value;
           }
 
           if (key === "category") {
-            const price = root.querySelector(`[data-index="${index}"][data-key="price"]`);
+            const price = root.querySelector(
+              `[data-index="${index}"][data-key="price"]`
+            );
             const noPrice = ["無料配布","Web展示"].includes(input.value);
+
             if (price) {
               price.disabled = noPrice;
               if (noPrice) {
@@ -936,6 +1064,7 @@
               }
             }
           }
+
           renderCanvas();
         };
 
@@ -956,6 +1085,7 @@
 
           items[index].noImage = input.checked;
           const fileInput = root.querySelector(`[data-image="${index}"]`);
+
           if (fileInput) {
             fileInput.disabled = input.checked;
             if (input.checked) fileInput.value = "";
@@ -1008,12 +1138,19 @@
       const src = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error(`画像を読み込めませんでした: ${file.name}`));
+        reader.onerror = () => reject(
+          new Error(`画像を読み込めませんでした: ${file.name}`)
+        );
         reader.readAsDataURL(file);
       });
 
       const image = await loadImage(src);
-      return { src, image, width:image.naturalWidth, height:image.naturalHeight };
+      return {
+        src,
+        image,
+        width:image.naturalWidth,
+        height:image.naturalHeight
+      };
     }
 
     async function loadItemImage(index, file) {
@@ -1043,6 +1180,7 @@
 
         loaded.forEach((entry) => {
           let target = items.find((item) => !item.image);
+
           if (!target) {
             target = makeDefaultItem(nextItemNumber++);
             items.push(target);
@@ -1083,18 +1221,20 @@
     }
 
     function getHeaderStyle(prefix, defaultSize, defaultColor) {
-      const sizeEl = document.getElementById(`${prefix}FontSize`);
-      const colorEl = document.getElementById(`${prefix}TextColor`);
-      const familyEl = document.getElementById(`${prefix}FontFamily`);
-      const enabledEl = document.getElementById(`${prefix}BgEnabled`);
-      const bgColorEl = document.getElementById(`${prefix}BgColor`);
-      const size = Number.parseInt(sizeEl ? sizeEl.value : "", 10);
+      const sizeElement = document.getElementById(`${prefix}FontSize`);
+      const colorElement = document.getElementById(`${prefix}TextColor`);
+      const familyElement = document.getElementById(`${prefix}FontFamily`);
+      const enabledElement = document.getElementById(`${prefix}BgEnabled`);
+      const backgroundElement = document.getElementById(`${prefix}BgColor`);
+      const parsedSize = Number.parseInt(sizeElement ? sizeElement.value : "", 10);
 
       return {
-        size:Number.isFinite(size) ? size : defaultSize,
-        family:(familyEl && familyEl.value) || DEFAULT_FONT_FAMILY,
-        color:(colorEl && colorEl.value) || defaultColor,
-        background:enabledEl && enabledEl.checked && bgColorEl ? bgColorEl.value : ""
+        size:Number.isFinite(parsedSize) ? parsedSize : defaultSize,
+        family:(familyElement && familyElement.value) || DEFAULT_FONT_FAMILY,
+        color:(colorElement && colorElement.value) || defaultColor,
+        background:enabledElement && enabledElement.checked && backgroundElement
+          ? backgroundElement.value
+          : ""
       };
     }
 
@@ -1103,15 +1243,18 @@
 
       String(text || "").split("\n").forEach((paragraph) => {
         let line = "";
-        for (const char of Array.from(paragraph)) {
-          const candidate = line + char;
+
+        for (const character of Array.from(paragraph)) {
+          const candidate = line + character;
+
           if (line && context.measureText(candidate).width > maxWidth) {
             lines.push(line);
-            line = char;
+            line = character;
           } else {
             line = candidate;
           }
         }
+
         lines.push(line);
       });
 
@@ -1132,7 +1275,7 @@
       let chosen = minFont;
       let lines = null;
 
-      for (let i = 0; i < 18; i++) {
+      for (let iteration = 0; iteration < 18; iteration++) {
         const size = (low + high) / 2;
         context.font = `${weight} ${size}px ${family}`;
         const candidate = wrapLines(context, text, width);
@@ -1172,16 +1315,17 @@
       context.textAlign = align;
       context.textBaseline = "top";
 
-      const x = align === "right"
+      const textX = align === "right"
         ? box.x + width
         : align === "center"
           ? box.x + width / 2
           : box.x;
 
       lines.forEach((line) => {
-        context.fillText(line, x, y, width);
+        context.fillText(line, textX, y, width);
         y += lineHeight;
       });
+
       context.restore();
     }
 
@@ -1191,7 +1335,10 @@
       const family = options.family || "sans-serif";
       const weight = options.weight || "400";
       const maxFont = Math.max(1, Number(options.maxFont) || 20);
-      const minFont = Math.max(1, Math.min(maxFont, Number(options.minFont) || 1));
+      const minFont = Math.max(1, Math.min(
+        maxFont,
+        Number(options.minFont) || 1
+      ));
       const width = Math.max(1, box.width);
       const height = Math.max(1, box.height);
       const verticalRatio = options.verticalRatio || 1.15;
@@ -1200,9 +1347,10 @@
       let high = maxFont;
       let chosen = minFont;
 
-      for (let i = 0; i < 20; i++) {
+      for (let iteration = 0; iteration < 20; iteration++) {
         const size = (low + high) / 2;
         context.font = `${weight} ${size}px ${family}`;
+
         const fits = context.measureText(text).width <= width &&
           size * verticalRatio <= height;
 
@@ -1229,6 +1377,7 @@
       context.textAlign = "left";
       context.textBaseline = "middle";
       context.fillText(text, box.x, box.y + height / 2, width);
+
       context.restore();
     }
 
@@ -1241,25 +1390,27 @@
       const eventText = [eventName, eventDate].filter(Boolean).join(" | ");
       const spaceText = getEl("spaceNo").value.trim();
       const circleText = getEl("circleName").value.trim();
-      const useTwoRowHeader = Boolean(PRINT_SPECS[paper]) || orientation === "LANDSCAPE";
+      const twoRows = Boolean(PRINT_SPECS[paper]) || orientation === "LANDSCAPE";
 
-      if (useTwoRowHeader) {
+      if (twoRows) {
         const compact = paper === "PICSQUARE";
         const topInset = social
-          ? (compact ? 4 : Math.max(6, headerHeight * 0.045))
-          : Math.max(safeY, headerHeight * 0.12);
+          ? (compact ? 4 : Math.max(6, headerHeight * .045))
+          : Math.max(safeY, headerHeight * .12);
         const bottomInset = social
-          ? (compact ? 4 : Math.max(6, headerHeight * 0.045))
-          : Math.max(safeY, headerHeight * 0.08);
+          ? (compact ? 4 : Math.max(6, headerHeight * .045))
+          : Math.max(safeY, headerHeight * .08);
         const usableHeight = Math.max(2, headerHeight - topInset - bottomInset);
-        const rowGap = Math.max(social ? 2 : 4, usableHeight * 0.08);
-        const firstRowHeight = (usableHeight - rowGap) * 0.48;
-        const secondRowHeight = usableHeight - rowGap - firstRowHeight;
-        const firstRowY = bleedTop + topInset;
-        const secondRowY = firstRowY + firstRowHeight + rowGap;
+        const rowGap = Math.max(social ? 2 : 4, usableHeight * .08);
+        const firstHeight = (usableHeight - rowGap) * .48;
+        const secondHeight = usableHeight - rowGap - firstHeight;
+        const firstY = bleedTop + topInset;
+        const secondY = firstY + firstHeight + rowGap;
 
-        fitSingleLine(context, eventText,
-          { x, y:firstRowY, width, height:firstRowHeight },
+        fitSingleLine(
+          context,
+          eventText,
+          { x, y:firstY, width, height:firstHeight },
           {
             maxFont:eventStyle.size,
             minFont:social ? 5 : 8,
@@ -1267,13 +1418,16 @@
             family:eventStyle.family,
             color:eventStyle.color,
             background:eventStyle.background
-          });
+          }
+        );
 
-        const columnGap = Math.max(social ? 8 : 14, width * 0.035);
+        const columnGap = Math.max(social ? 8 : 14, width * .035);
         const columnWidth = Math.max(1, (width - columnGap) / 2);
 
-        fitSingleLine(context, spaceText,
-          { x, y:secondRowY, width:columnWidth, height:secondRowHeight },
+        fitSingleLine(
+          context,
+          spaceText,
+          { x, y:secondY, width:columnWidth, height:secondHeight },
           {
             maxFont:spaceStyle.size,
             minFont:social ? 5 : 8,
@@ -1281,10 +1435,18 @@
             family:spaceStyle.family,
             color:spaceStyle.color,
             background:spaceStyle.background
-          });
+          }
+        );
 
-        fitSingleLine(context, circleText,
-          { x:x + columnWidth + columnGap, y:secondRowY, width:columnWidth, height:secondRowHeight },
+        fitSingleLine(
+          context,
+          circleText,
+          {
+            x:x + columnWidth + columnGap,
+            y:secondY,
+            width:columnWidth,
+            height:secondHeight
+          },
           {
             maxFont:circleStyle.size,
             minFont:social ? 5 : 8,
@@ -1292,13 +1454,14 @@
             family:circleStyle.family,
             color:circleStyle.color,
             background:circleStyle.background
-          });
+          }
+        );
         return;
       }
 
-      const top = Math.max(4, headerHeight * 0.035);
+      const top = Math.max(4, headerHeight * .035);
       const available = Math.max(1, headerHeight - top * 2);
-      const gap = Math.max(2, available * 0.025);
+      const gap = Math.max(2, available * .025);
       const rowHeight = Math.max(1, (available - gap * 2) / 3);
       let y = bleedTop + top;
 
@@ -1338,6 +1501,7 @@
 
     function roundRect(context, x, y, width, height, radius, fill, stroke, lineWidth = 1) {
       const r = Math.max(0, Math.min(radius, width / 2, height / 2));
+
       context.beginPath();
       context.moveTo(x + r, y);
       context.lineTo(x + width - r, y);
@@ -1361,9 +1525,15 @@
       }
     }
 
-    function drawCard(context, item, x, y, width, height, config, landscape) {
+    function drawCard(context, item, x, y, width, height, config) {
       const padding = config.padding;
-      roundRect(context, x, y, width, height, config.radius, "#FFFFFF", "#cbd5e1", config.borderWidth);
+      const categoryStyle = getCategoryStyle(item.category);
+
+      // カード本体は白。
+      roundRect(
+        context, x, y, width, height,
+        config.radius, "#FFFFFF", "#cbd5e1", config.borderWidth
+      );
 
       context.save();
       roundRect(context, x, y, width, height, config.radius, null, null);
@@ -1374,8 +1544,6 @@
         (width / Math.max(1, config.referenceWidth)) * heightScale
       );
       const textScale = config.textScale * areaScale;
-      const style = getCategoryStyle(item.category);
-      const nonBackgroundColors = getPaletteColorsExcludingBackground();
 
       const categoryHeight = Math.min(
         config.categoryBand * heightScale,
@@ -1388,40 +1556,63 @@
         Math.max(15, width * .055)
       );
 
-      context.fillStyle = style.background;
+      // カテゴリ帯は背景色・年齢区分帯と異なるパレット色。
+      context.fillStyle = categoryStyle.background;
       context.fillRect(x, y, width, categoryHeight);
-      fitText(context, item.category,
-        { x:x + padding, y:y + 1, width:width - padding * 2, height:categoryHeight - 2 },
+
+      fitText(
+        context,
+        item.category,
+        {
+          x:x + padding,
+          y:y + 1,
+          width:width - padding * 2,
+          height:categoryHeight - 2
+        },
         {
           maxFont:Math.min(categoryHeight * .78, width * .2),
           minFont:1,
           weight:"700",
           family:item.categoryFontFamily,
-          color:style.text,
+          color:categoryStyle.text,
           align:"left",
           lineHeight:1
-        });
+        }
+      );
 
+      // 年齢区分帯には2番目に暗い色を使う。
       const ageY = y + categoryHeight;
-      const isR18 = item.ageRating === "R18";
-      // 背景色を除いたパレット色を使うため、年齢帯にも全体背景色は使われない。
-      const ageBandColor = nonBackgroundColors[3] || nonBackgroundColors[0];
-      context.fillStyle = isR18 ? "#991b1b" : ageBandColor;
+      const ageBandColor = selectedPalette.ageBandColor;
+
+      context.fillStyle = ageBandColor;
       context.fillRect(x, ageY, width, ageHeight);
-      fitText(context, isR18 ? "R18" : "全年齢",
-        { x:x + padding, y:ageY + 1, width:width - padding * 2, height:ageHeight - 2 },
+
+      fitText(
+        context,
+        item.ageRating,
+        {
+          x:x + padding,
+          y:ageY + 1,
+          width:width - padding * 2,
+          height:ageHeight - 2
+        },
         {
           maxFont:Math.min(ageHeight * .75, width * .16),
           minFont:1,
           weight:"700",
           family:item.ageRatingFontFamily,
-          color:isR18 ? "#fff" : getReadableTextColor(ageBandColor),
+          color:getReadableTextColor(ageBandColor),
           align:"left",
           lineHeight:1
-        });
+        }
+      );
 
       const bodyY = ageY + ageHeight + padding;
-      const bodyHeight = Math.max(1, height - categoryHeight - ageHeight - padding * 2);
+      const bodyHeight = Math.max(
+        1,
+        height - categoryHeight - ageHeight - padding * 2
+      );
+
       let textX = x + padding;
       let textWidth = Math.max(1, width - padding * 2);
       let imageBox = null;
@@ -1441,11 +1632,13 @@
           width:imageWidth,
           height:imageHeight
         };
+
         textX = imageBox.x + imageWidth + padding;
         textWidth = Math.max(1, x + width - padding - textX);
       }
 
       const parts = [];
+
       if (item.title) {
         parts.push({
           text:item.title,
@@ -1456,21 +1649,26 @@
           weight:"700"
         });
       }
+
       if (!["無料配布","Web展示"].includes(item.category) && item.price) {
         parts.push({
           text:item.price,
           ratio:.28,
           max:100 * textScale,
           family:item.priceFontFamily,
-          color:style.background,
+          color:categoryStyle.background,
           weight:"700"
         });
       }
+
       if (item.desc) {
         parts.push({
           text:item.desc,
           ratio:.30,
-          max:Math.max(8, Math.min(100, Number(item.descriptionFontSize) || 38)) * textScale,
+          max:Math.max(
+            8,
+            Math.min(100, Number(item.descriptionFontSize) || 38)
+          ) * textScale,
           family:item.descFontFamily,
           color:"#475569",
           weight:"400"
@@ -1481,8 +1679,14 @@
       let cursorY = bodyY;
 
       parts.forEach((part) => {
-        const partHeight = Math.max(1, bodyHeight * part.ratio / Math.max(.01, ratioSum));
-        fitText(context, part.text,
+        const partHeight = Math.max(
+          1,
+          bodyHeight * part.ratio / Math.max(.01, ratioSum)
+        );
+
+        fitText(
+          context,
+          part.text,
           { x:textX, y:cursorY, width:textWidth, height:partHeight },
           {
             maxFont:part.max,
@@ -1491,16 +1695,28 @@
             color:part.color,
             weight:part.weight,
             align:"left"
-          });
+          }
+        );
+
         cursorY += partHeight;
       });
 
       if (imageBox && item.image) {
-        context.drawImage(item.image, imageBox.x, imageBox.y, imageBox.width, imageBox.height);
+        context.drawImage(
+          item.image,
+          imageBox.x,
+          imageBox.y,
+          imageBox.width,
+          imageBox.height
+        );
       }
 
       context.restore();
-      roundRect(context, x, y, width, height, config.radius, null, "#cbd5e1", config.borderWidth);
+
+      roundRect(
+        context, x, y, width, height,
+        config.radius, null, "#cbd5e1", config.borderWidth
+      );
     }
 
     function renderCanvas() {
@@ -1521,41 +1737,62 @@
           ? social.header
           : Math.round(trimHeight * (landscape ? .17 : .15));
 
+        // ヘッダー背景はパレット内の最も暗い色。
         context.fillStyle = getEl("headerBgColor").value || selectedPalette.header;
-        context.fillRect(0, 0, outputWidth, Math.min(outputHeight, bleedTop + headerHeight));
+        context.fillRect(
+          0,
+          0,
+          outputWidth,
+          Math.min(outputHeight, bleedTop + headerHeight)
+        );
 
         const accentHeight = social
           ? Math.max(3, headerHeight * .025)
           : Math.max(8, 12 * trimWidth / 3307);
-        context.fillStyle = getEl("headerAccentColor").value || selectedPalette.accent;
-        context.fillRect(bleedLeft, bleedTop + headerHeight - accentHeight, trimWidth, accentHeight);
 
-        const sizes = HEADER_FONT_SIZES[paper];
+        context.fillStyle =
+          getEl("headerAccentColor").value || selectedPalette.categoryColors[0];
+        context.fillRect(
+          bleedLeft,
+          bleedTop + headerHeight - accentHeight,
+          trimWidth,
+          accentHeight
+        );
+
+        const headerSizes = HEADER_FONT_SIZES[paper];
+        const defaultHeaderText = getReadableTextColor(selectedPalette.header);
+
         drawHeader(
           context,
           social,
           headerHeight,
-          getHeaderStyle("eventInfo", sizes.event, getReadableTextColor(selectedPalette.header)),
-          getHeaderStyle("spaceInfo", sizes.space, getReadableTextColor(selectedPalette.header)),
-          getHeaderStyle("circleInfo", sizes.circle, getReadableTextColor(selectedPalette.header))
+          getHeaderStyle("eventInfo", headerSizes.event, defaultHeaderText),
+          getHeaderStyle("spaceInfo", headerSizes.space, defaultHeaderText),
+          getHeaderStyle("circleInfo", headerSizes.circle, defaultHeaderText)
         );
 
         const columns = 2;
-        const scale = trimWidth / 3307;
+        const printScale = trimWidth / 3307;
         const marginX = social ? social.marginX : safeX;
         const marginY = social ? social.marginY : safeY;
-        const gapX = social ? social.gapX : Math.round(40 * scale);
-        const gapY = social ? social.gapY : Math.round(40 * scale);
-        const padding = social ? social.padding : Math.round(25 * scale);
-        const startY = headerHeight + (social ? 10 : Math.max(24 * scale, safeY));
+        const gapX = social ? social.gapX : Math.round(40 * printScale);
+        const gapY = social ? social.gapY : Math.round(40 * printScale);
+        const padding = social ? social.padding : Math.round(25 * printScale);
+        const startY = headerHeight +
+          (social ? 10 : Math.max(24 * printScale, safeY));
 
-        // 同じ種類のカードを1行に最大2枚並べ、新刊の行は通常の1.5倍の高さにする。
+        // 同じ種類のカードを1行に最大2枚配置。新刊行は1.5倍の高さ。
         const rows = [];
+
         items.forEach((item) => {
           const isNewRelease = item.category === "新刊";
           let row = rows[rows.length - 1];
 
-          if (!row || row.isNewRelease !== isNewRelease || row.items.length >= columns) {
+          if (
+            !row ||
+            row.isNewRelease !== isNewRelease ||
+            row.items.length >= columns
+          ) {
             row = {
               items:[],
               units:isNewRelease ? 1.5 : 1,
@@ -1563,15 +1800,17 @@
             };
             rows.push(row);
           }
+
           row.items.push(item);
         });
 
-        if (rows.length === 0) return;
+        if (!rows.length) return;
 
         const totalUnits = rows.reduce((sum, row) => sum + row.units, 0);
         const unitHeight = Math.max(
           1,
-          (trimHeight - startY - marginY - gapY * (rows.length - 1)) / totalUnits
+          (trimHeight - startY - marginY - gapY * (rows.length - 1)) /
+            totalUnits
         );
         const cardWidth = Math.max(
           1,
@@ -1580,24 +1819,32 @@
 
         const config = {
           padding,
-          radius:social ? 12 : Math.max(12, 24 * scale),
-          categoryBand:social ? social.categoryBand : unitHeight * .14,
-          ageBand:social ? social.ageBand : unitHeight * .09,
-          borderWidth:social ? 2 : Math.max(2, 4 * scale),
-          textScale:social ? social.cardScale : scale,
+          radius:social ? 12 : Math.max(12, 24 * printScale),
+          categoryBand:social
+            ? social.categoryBand
+            : unitHeight * .14,
+          ageBand:social
+            ? social.ageBand
+            : unitHeight * .09,
+          borderWidth:social ? 2 : Math.max(2, 4 * printScale),
+          textScale:social ? social.cardScale : printScale,
           referenceWidth:cardWidth,
           referenceHeight:unitHeight
         };
 
         let y = bleedTop + startY;
+
         rows.forEach((row) => {
           if (token !== renderToken) return;
 
           const cardHeight = unitHeight * row.units;
+
           row.items.forEach((item, columnIndex) => {
-            const x = bleedLeft + marginX + columnIndex * (cardWidth + gapX);
-            drawCard(context, item, x, y, cardWidth, cardHeight, config, landscape);
+            const x = bleedLeft + marginX +
+              columnIndex * (cardWidth + gapX);
+            drawCard(context, item, x, y, cardWidth, cardHeight, config);
           });
+
           y += cardHeight + gapY;
         });
       } catch (error) {
@@ -1615,15 +1862,21 @@
       stage.style.transform = `scale(${safeScale})`;
       container.style.width = `${outputWidth * safeScale}px`;
       container.style.height = `${outputHeight * safeScale}px`;
+
       getEl("zoomDisplay").textContent = `表示 ${Math.round(safeScale * 100)}%`;
-      getEl("zoomSlider").value = String(Math.max(1, Math.min(200, Math.round(safeScale * 100))));
+      getEl("zoomSlider").value = String(
+        Math.max(1, Math.min(200, Math.round(safeScale * 100)))
+      );
     }
 
     function fitPreview() {
       const workspace = getEl("workspace");
       const availableWidth = Math.max(1, workspace.clientWidth - 50);
       const availableHeight = Math.max(1, workspace.clientHeight - 75);
-      applyScale(Math.min(availableWidth / outputWidth, availableHeight / outputHeight));
+      applyScale(Math.min(
+        availableWidth / outputWidth,
+        availableHeight / outputHeight
+      ));
     }
 
     function setupResize() {
@@ -1648,6 +1901,7 @@
 
       handle.addEventListener("pointerdown", (event) => {
         event.preventDefault();
+
         const toolbarRect = toolbar.getBoundingClientRect();
         const workspaceRect = workspace.getBoundingClientRect();
 
@@ -1663,6 +1917,7 @@
           left:toolbarRect.left - workspaceRect.left,
           top:toolbarRect.top - workspaceRect.top
         };
+
         handle.setPointerCapture(event.pointerId);
       });
 
@@ -1670,19 +1925,28 @@
         if (!drag || drag.id !== event.pointerId) return;
 
         const rect = workspace.getBoundingClientRect();
-        toolbar.style.left = `${Math.max(0, Math.min(
-          rect.width - toolbar.offsetWidth,
-          drag.left + event.clientX - drag.x
-        ))}px`;
-        toolbar.style.top = `${Math.max(0, Math.min(
-          rect.height - toolbar.offsetHeight,
-          drag.top + event.clientY - drag.y
-        ))}px`;
+
+        toolbar.style.left = `${Math.max(
+          0,
+          Math.min(
+            rect.width - toolbar.offsetWidth,
+            drag.left + event.clientX - drag.x
+          )
+        )}px`;
+
+        toolbar.style.top = `${Math.max(
+          0,
+          Math.min(
+            rect.height - toolbar.offsetHeight,
+            drag.top + event.clientY - drag.y
+          )
+        )}px`;
       });
 
       const finish = (event) => {
         if (drag && drag.id === event.pointerId) drag = null;
       };
+
       handle.addEventListener("pointerup", finish);
       handle.addEventListener("pointercancel", finish);
     }
@@ -1690,12 +1954,18 @@
     function openPrintPreview() {
       const isSocial = Boolean(SOCIAL_PRESETS[paper]);
       const spec = PRINT_SPECS[paper];
+
       const widthMm = isSocial
         ? outputWidth * 25.4 / 200
-        : orientation === "LANDSCAPE" ? spec.heightMm : spec.widthMm;
+        : orientation === "LANDSCAPE"
+          ? spec.heightMm
+          : spec.widthMm;
+
       const heightMm = isSocial
         ? outputHeight * 25.4 / 200
-        : orientation === "LANDSCAPE" ? spec.widthMm : spec.heightMm;
+        : orientation === "LANDSCAPE"
+          ? spec.widthMm
+          : spec.heightMm;
 
       const popup = window.open("", "_blank");
       if (!popup) {
@@ -1716,7 +1986,13 @@
         html,body { margin:0; padding:0; }
         img { display:block; width:${widthMm}mm; height:${heightMm}mm; }
         @media screen {
-          body { min-height:100vh; display:grid; place-items:center; padding:24px; background:#1e293b; }
+          body {
+            min-height:100vh;
+            display:grid;
+            place-items:center;
+            padding:24px;
+            background:#1e293b;
+          }
           img { width:min(90vw,${widthMm}mm); height:auto; }
         }
       `;
@@ -1726,6 +2002,7 @@
       image.alt = "印刷用プレビュー";
       image.src = canvas.toDataURL("image/png");
       doc.body.appendChild(image);
+
       image.addEventListener("load", () => {
         popup.focus();
         popup.print();
@@ -1741,16 +2018,27 @@
       });
 
       [
-        "headerBgColor", "headerAccentColor",
-        "eventInfoFontSize", "eventInfoTextColor", "eventInfoFontFamily",
-        "eventInfoBgEnabled", "eventInfoBgColor",
-        "spaceInfoFontSize", "spaceInfoTextColor", "spaceInfoFontFamily",
-        "spaceInfoBgEnabled", "spaceInfoBgColor",
-        "circleInfoFontSize", "circleInfoTextColor", "circleInfoFontFamily",
-        "circleInfoBgEnabled", "circleInfoBgColor"
+        "headerBgColor",
+        "headerAccentColor",
+        "eventInfoFontSize",
+        "eventInfoTextColor",
+        "eventInfoFontFamily",
+        "eventInfoBgEnabled",
+        "eventInfoBgColor",
+        "spaceInfoFontSize",
+        "spaceInfoTextColor",
+        "spaceInfoFontFamily",
+        "spaceInfoBgEnabled",
+        "spaceInfoBgColor",
+        "circleInfoFontSize",
+        "circleInfoTextColor",
+        "circleInfoFontFamily",
+        "circleInfoBgEnabled",
+        "circleInfoBgColor"
       ].forEach((id) => {
         const element = document.getElementById(id);
         if (!element) return;
+
         element.addEventListener("input", renderCanvas);
         element.addEventListener("change", renderCanvas);
       });
