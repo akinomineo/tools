@@ -1074,7 +1074,12 @@
       context.textAlign = options.align || "left";
       context.textBaseline = "top";
 
-      const x = options.align === "center" ? box.x + width / 2 : box.x;
+      const x = options.align === "center"
+        ? box.x + width / 2
+        : options.align === "right"
+          ? box.x + width
+          : box.x;
+
       lines.forEach((line) => {
         context.fillText(line, x, y, width);
         y += lineHeight;
@@ -1208,7 +1213,6 @@
         });
     }
 
-    // 自動縮小して、文字列を必ず1行で枠内に表示する。
     function fitSingleLine(context, text, box, options = {}) {
       if (!text) return;
 
@@ -1303,7 +1307,7 @@
           minFont:1,
           weight:"700",
           color:style.text,
-          align:"center",
+          align:"right",
           lineHeight:1
         });
 
@@ -1318,7 +1322,7 @@
           minFont:1,
           weight:"700",
           color:isR18 ? "#fff" : "#174b26",
-          align:"center",
+          align:"right",
           lineHeight:1
         });
 
@@ -1379,7 +1383,8 @@
             maxFont:part.max,
             minFont:Math.max(4, 7 * config.textScale),
             color:part.color,
-            weight:part.weight
+            weight:part.weight,
+            align:"right"
           });
         cursorY += partHeight;
       });
@@ -1430,11 +1435,6 @@
         );
 
         const columns = 2;
-        if (paper === "WEB_LANDSCAPE") columns = items.length <= 1 ? 1 : 2;
-        else if (social) columns = items.length <= 3 ? 1 : 2;
-        else if (landscape) columns = items.length <= 1 ? 1 : (items.length > 4 ? 3 : 2);
-        else if (items.length <= 3) columns = 1;
-
         const scale = trimWidth / 3307;
         const marginX = social ? social.marginX : safeX;
         const marginY = social ? social.marginY : safeY;
@@ -1443,29 +1443,31 @@
         const padding = social ? social.padding : Math.round(25 * scale);
         const startY = headerHeight + (social ? 10 : Math.max(24 * scale, safeY));
 
-        // 新刊カードは横幅いっぱい
         const rows = [];
         items.forEach((item) => {
           if (item.category === "新刊") {
-            rows.push([item]);
+            rows.push({ items:[item], units:2, fullWidth:true });
             return;
           }
 
           let row = rows[rows.length - 1];
-          if (!row || row[0].category === "新刊" || row.length >= columns) {
-            row = [];
+          if (!row || row.fullWidth || row.items.length >= columns) {
+            row = { items:[], units:1, fullWidth:false };
             rows.push(row);
           }
-          row.push(item);
+          row.items.push(item);
         });
 
-        const cardHeight = Math.max(
+        if (rows.length === 0) return;
+
+        const totalUnits = rows.reduce((sum, row) => sum + row.units, 0);
+        const unitHeight = Math.max(
           1,
-          (trimHeight - startY - marginY - gapY * (rows.length - 1)) / rows.length
+          (trimHeight - startY - marginY - gapY * (rows.length - 1)) / totalUnits
         );
         const cardWidth = Math.max(
           1,
-          (trimWidth - marginX * 2 - gapX * (columns - 1)) / columns
+          (trimWidth - marginX * 2 - gapX) / columns
         );
         const fullCardWidth = Math.max(1, trimWidth - marginX * 2);
 
@@ -1473,25 +1475,25 @@
           social:Boolean(social),
           padding,
           radius:social ? 12 : Math.max(12, 24 * scale),
-          categoryBand:social ? social.categoryBand : cardHeight * .14,
-          ageBand:social ? social.ageBand : cardHeight * .09,
+          categoryBand:social ? social.categoryBand : unitHeight * .14,
+          ageBand:social ? social.ageBand : unitHeight * .09,
           borderWidth:social ? 2 : Math.max(2, 4 * scale),
           textScale:social ? social.cardScale : scale
         };
 
-        rows.forEach((row, rowIndex) => {
+        let y = bleedTop + startY;
+        rows.forEach((row) => {
           if (token !== renderToken) return;
 
-          const y = bleedTop + startY + rowIndex * (cardHeight + gapY);
-          const isNewReleaseRow = row.length === 1 && row[0].category === "新刊";
-
-          row.forEach((item, columnIndex) => {
-            const width = isNewReleaseRow ? fullCardWidth : cardWidth;
+          const cardHeight = unitHeight * row.units;
+          row.items.forEach((item, columnIndex) => {
+            const width = row.fullWidth ? fullCardWidth : cardWidth;
             const x = bleedLeft + marginX +
-              (isNewReleaseRow ? 0 : columnIndex * (cardWidth + gapX));
+              (row.fullWidth ? 0 : columnIndex * (cardWidth + gapX));
 
             drawCard(context, item, x, y, width, cardHeight, config, landscape);
           });
+          y += cardHeight + gapY;
         });
       } catch (error) {
         console.error("プレビュー描画エラー:", error);
