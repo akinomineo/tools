@@ -133,14 +133,15 @@
       background: #0f172a;
       color: #cbd5e1;
       font-size: 9px;
+      text-align: left;
     }
     .palette button.selected { outline: 2px solid #f43f5e; }
     .swatch {
-      width: 13px;
+      width: 34px;
       height: 13px;
       flex: 0 0 auto;
       border: 1px solid rgba(255,255,255,.25);
-      border-radius: 50%;
+      border-radius: 4px;
     }
 
     .check-row {
@@ -300,7 +301,7 @@
       <div class="brand-icon" aria-hidden="true">✦</div>
       <div>
         <h1>同人おしながきジェネレーター</h1>
-        <p id="paperSpecLabel">A3縦・赤色・無地</p>
+        <p id="paperSpecLabel">A3縦・冬・お正月配色</p>
       </div>
     </div>
     <div class="actions">
@@ -344,27 +345,22 @@
           <h2>背景デザイン・規定カラー</h2>
           <label class="field">背景の種類
             <select id="bgTypeSelect" name="backgroundType" class="control">
-              <option value="pattern" selected>パターン・無地</option>
+              <option value="pattern" selected>配色パレットの背景色</option>
               <option value="custom">背景画像</option>
               <option value="color">単色カラー</option>
             </select>
           </label>
           <div class="field">
-            規定カラー
+            規定カラー（背景・ヘッダー・頒布物カードに反映）
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              初期状態は赤の規定カラーと無地です。
+              選択した4色パレットを背景・ヘッダー・頒布物カードに反映します。
             </small>
           </div>
           <div id="patternControls">
-            <label class="field">パターン
+            <label class="field">背景パターン
               <select id="patternStyleSelect" name="patternStyle" class="control">
                 <option value="solid" selected>無地</option>
-                <option value="dots">ドット</option>
-                <option value="stripes">ストライプ</option>
-                <option value="diagonal">斜めストライプ</option>
-                <option value="border">ボーダー</option>
-                <option value="check">チェック</option>
               </select>
             </label>
           </div>
@@ -375,7 +371,7 @@
           </div>
           <div id="singleColorControls" class="hidden">
             <label class="field">背景色
-              <input id="bgColorPicker" name="backgroundColor" type="color" value="#ffffff" class="color-control">
+              <input id="bgColorPicker" name="backgroundColor" type="color" value="#F5F7F8" class="color-control">
             </label>
           </div>
         </section>
@@ -402,10 +398,10 @@
           <h2>ヘッダー配色</h2>
           <div class="two-col">
             <label class="field">背景色
-              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#333333" class="color-control">
+              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#DC3232" class="color-control">
             </label>
             <label class="field">アクセント色
-              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#FF4B00" class="color-control">
+              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#F5C850" class="color-control">
             </label>
           </div>
         </section>
@@ -423,7 +419,7 @@
           <label class="check-row">
             イベント情報の背景色
             <input id="eventInfoBgEnabled" name="eventInfoBgEnabled" type="checkbox">
-            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#333333" class="color-control">
+            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#DC3232" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -439,7 +435,7 @@
           <label class="check-row">
             スペース番号の背景色
             <input id="spaceInfoBgEnabled" name="spaceInfoBgEnabled" type="checkbox">
-            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#FF4B00" class="color-control">
+            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#3C553C" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -455,7 +451,7 @@
           <label class="check-row">
             サークル名の背景色
             <input id="circleInfoBgEnabled" name="circleInfoBgEnabled" type="checkbox">
-            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#333333" class="color-control">
+            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#DC3232" class="color-control">
           </label>
         </section>
 
@@ -504,23 +500,16 @@
     "use strict";
 
     const PALETTES = [
-      { name:"赤", hex:"#FF4B00", background:"#FFFFFF", header:"#333333", accent:"#FF4B00", space:"#FF4B00" },
-      { name:"オレンジ", hex:"#FFA500", background:"#FFFFCC", header:"#333333", accent:"#FFA500", space:"#FFA500" },
-      { name:"黄", hex:"#FFF100", background:"#FFFFCC", header:"#333333", accent:"#FFF100", space:"#FFF100" },
-      { name:"緑", hex:"#00AF55", background:"#CCFFCC", header:"#333333", accent:"#00AF55", space:"#00AF55" },
-      { name:"青", hex:"#005AFF", background:"#CCEEFF", header:"#333333", accent:"#005AFF", space:"#005AFF" },
-      { name:"紫", hex:"#AA00FF", background:"#F3E5F5", header:"#333333", accent:"#AA00FF", space:"#AA00FF" },
-      { name:"ピンク", hex:"#F20070", background:"#FFC0CB", header:"#333333", accent:"#F20070", space:"#F20070" },
-      { name:"茶色", hex:"#995A00", background:"#F5DEB3", header:"#333333", accent:"#995A00", space:"#995A00" },
-      { name:"空色", hex:"#00DCFF", background:"#CCEEFF", header:"#333333", accent:"#00DCFF", space:"#00DCFF" }
+      { name:"冬・お正月", background:"#F5F7F8", main:"#DC3232", sub:"#3C553C", accent:"#F5C850" },
+      { name:"春・進級進学", background:"#F5EEDC", main:"#F5B4C8", sub:"#A0D2AA", accent:"#EB786E" },
+      { name:"夏・海やプール", background:"#EBFAFA", main:"#008CD2", sub:"#5AD2DC", accent:"#F5963C" },
+      { name:"秋・ハロウィン", background:"#F0E6C8", main:"#EB8732", sub:"#73825F", accent:"#502D5A" },
+      { name:"クール系", background:"#F0F3F5", main:"#1E2D50", sub:"#A0AAB4", accent:"#5AAAE6" },
+      { name:"山の配色", background:"#EBE1C8", main:"#37553C", sub:"#788C69", accent:"#64462D" },
+      { name:"海の配色", background:"#FAF8F0", main:"#468CB9", sub:"#5FC8C8", accent:"#E1CDA5" },
+      { name:"華やか系イベント・セール", background:"#FAF5E1", main:"#FF5587", sub:"#5ACDD7", accent:"#5F376E" },
+      { name:"モノトーン", background:"#F8F8F5", main:"#464646", sub:"#AAAAAA", accent:"#2D78BE" }
     ];
-
-    const CATEGORY_STYLES = {
-      "新刊": { background:"#FF4B00", text:"#ffffff" },
-      "既刊": { background:"#005AFF", text:"#ffffff" },
-      "無料配布": { background:"#00AF55", text:"#ffffff" },
-      "Web展示": { background:"#00DCFF", text:"#ffffff" }
-    };
 
     const PRINT_SPECS = {
       A3: { widthMm:303, heightMm:426, widthPx:2386, heightPx:3354, trimWidthMm:297, trimHeightMm:420 },
@@ -592,6 +581,29 @@
       return element;
     }
 
+    function getReadableTextColor(hex) {
+      const value = hex.replace("#", "");
+      const red = parseInt(value.slice(0, 2), 16);
+      const green = parseInt(value.slice(2, 4), 16);
+      const blue = parseInt(value.slice(4, 6), 16);
+      const luminance = (red * 299 + green * 587 + blue * 114) / 1000;
+      return luminance >= 150 ? "#1e293b" : "#ffffff";
+    }
+
+    function getCategoryStyle(category) {
+      const color = {
+        "新刊":selectedPalette.main,
+        "既刊":selectedPalette.sub,
+        "無料配布":selectedPalette.accent,
+        "Web展示":selectedPalette.background
+      }[category] || selectedPalette.main;
+
+      return {
+        background:color,
+        text:getReadableTextColor(color)
+      };
+    }
+
     function initialize() {
       try {
         buildPalette();
@@ -615,8 +627,9 @@
       PALETTES.forEach((preset) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.title = `${preset.name}（CUDO推奨配色セット）`;
-        button.innerHTML = `<span class="swatch" style="background:${preset.hex}"></span><span>${preset.name}</span>`;
+        button.title = `${preset.name}（背景・メイン・サブ・アクセント）`;
+        button.innerHTML =
+          `<span class="swatch" style="background:linear-gradient(90deg,${preset.background} 0 25%,${preset.main} 25% 50%,${preset.sub} 50% 75%,${preset.accent} 75% 100%)"></span><span>${preset.name}</span>`;
         button.classList.toggle("selected", preset.name === selectedPalette.name);
 
         button.addEventListener("click", () => {
@@ -624,12 +637,23 @@
           root.querySelectorAll("button").forEach((el) => el.classList.remove("selected"));
           button.classList.add("selected");
 
-          if (getEl("bgTypeSelect").value === "color") {
-            getEl("bgColorPicker").value = preset.background;
-          }
-          getEl("headerBgColor").value = preset.header;
+          // パレット選択を背景にも反映し、カスタム画像・単色モードから切り替える。
+          getEl("bgTypeSelect").value = "pattern";
+          getEl("patternControls").classList.remove("hidden");
+          getEl("customBgControls").classList.add("hidden");
+          getEl("singleColorControls").classList.add("hidden");
+          getEl("bgColorPicker").value = preset.background;
+
+          getEl("headerBgColor").value = preset.main;
           getEl("headerAccentColor").value = preset.accent;
-          getEl("spaceInfoBgColor").value = preset.space;
+          getEl("eventInfoTextColor").value = getReadableTextColor(preset.main);
+          getEl("spaceInfoTextColor").value = getReadableTextColor(preset.main);
+          getEl("circleInfoTextColor").value = getReadableTextColor(preset.main);
+
+          getEl("eventInfoBgColor").value = preset.main;
+          getEl("spaceInfoBgColor").value = preset.sub;
+          getEl("circleInfoBgColor").value = preset.main;
+
           renderCanvas();
         });
 
@@ -691,7 +715,7 @@
         ? `${socialPreset.label} (${outputWidth} × ${outputHeight}px)`
         : `${paper}${orientation === "LANDSCAPE" ? "横" : "縦"} 塗り足し込み ${outputWidth} × ${outputHeight}px`;
 
-      getEl("paperSpecLabel").textContent = label;
+      getEl("paperSpecLabel").textContent = `${label}・${selectedPalette.name}`;
       getEl("dimensionDisplay").textContent = label;
       getEl("layoutHelp").textContent =
         "ヘッダー文字は指定サイズを上限に、領域に合わせて自動調整します。";
@@ -924,45 +948,6 @@
       }
     }
 
-    function makePattern(style, foreground, background) {
-      const tile = document.createElement("canvas");
-      tile.width = tile.height = 240;
-      const pctx = tile.getContext("2d");
-      pctx.fillStyle = background;
-      pctx.fillRect(0, 0, 240, 240);
-
-      if (style === "solid") return tile;
-
-      if (style === "dots") {
-        pctx.fillStyle = foreground;
-        pctx.beginPath();
-        pctx.arc(60, 60, 16, 0, Math.PI * 2);
-        pctx.arc(180, 180, 16, 0, Math.PI * 2);
-        pctx.fill();
-      } else if (style === "stripes") {
-        pctx.fillStyle = foreground;
-        pctx.fillRect(0, 0, 120, 240);
-      } else if (style === "diagonal") {
-        pctx.save();
-        pctx.translate(120, 120);
-        pctx.rotate(Math.PI / 4);
-        pctx.fillStyle = foreground;
-        for (let x = -360; x <= 360; x += 110) pctx.fillRect(x, -360, 36, 720);
-        pctx.restore();
-      } else if (style === "border") {
-        pctx.fillStyle = foreground;
-        pctx.fillRect(0, 0, 240, 24);
-        pctx.fillRect(0, 216, 240, 24);
-        pctx.fillRect(0, 0, 24, 240);
-        pctx.fillRect(216, 0, 24, 240);
-      } else if (style === "check") {
-        pctx.fillStyle = foreground;
-        pctx.fillRect(0, 0, 120, 120);
-        pctx.fillRect(120, 120, 120, 120);
-      }
-      return tile;
-    }
-
     function drawBackground(context) {
       const type = getEl("bgTypeSelect").value;
 
@@ -976,20 +961,11 @@
         return;
       }
       if (type === "pattern") {
-        const style = getEl("patternStyleSelect").value;
-        const base = selectedPalette.background;
-        context.fillStyle = base;
+        context.fillStyle = selectedPalette.background;
         context.fillRect(0, 0, outputWidth, outputHeight);
-        if (style !== "solid") {
-          const pattern = context.createPattern(makePattern(style, selectedPalette.hex, base), "repeat");
-          if (pattern) {
-            context.fillStyle = pattern;
-            context.fillRect(0, 0, outputWidth, outputHeight);
-          }
-        }
         return;
       }
-      context.fillStyle = "#fff";
+      context.fillStyle = selectedPalette.background;
       context.fillRect(0, 0, outputWidth, outputHeight);
     }
 
@@ -1090,13 +1066,6 @@
       context.restore();
     }
 
-    /*
-     * A3/A4は縦横どちらでも以下の2段構成:
-     * 1段目: イベント名と日時を1行
-     * 2段目: スペース番号とサークル名を横幅半分ずつで左揃え
-     *
-     * X横向きも同じ構成。その他のSNS縦向きは3段表示。
-     */
     function drawHeader(context, social, headerHeight, eventStyle, spaceStyle, circleStyle) {
       const margin = social ? social.marginX : safeX + 8;
       const x = bleedLeft + margin;
@@ -1172,7 +1141,6 @@
         return;
       }
 
-      // SNS縦向き: イベント → スペース → サークルの3段配置。
       const top = Math.max(4, headerHeight * 0.035);
       const available = Math.max(1, headerHeight - top * 2);
       const gap = Math.max(2, available * 0.025);
@@ -1216,7 +1184,6 @@
         });
     }
 
-    // 自動縮小して、文字列を必ず1行で枠内に表示する。
     function fitSingleLine(context, text, box, options = {}) {
       if (!text) return;
 
@@ -1298,7 +1265,7 @@
       context.rect(x, y, width, height);
       context.clip();
 
-      const style = CATEGORY_STYLES[item.category] || CATEGORY_STYLES["新刊"];
+      const style = getCategoryStyle(item.category);
       const categoryHeight = Math.min(config.categoryBand, height * .16, Math.max(18, width * .09));
       const ageHeight = Math.min(config.ageBand, height * .11, Math.max(15, width * .055));
 
@@ -1317,7 +1284,7 @@
 
       const ageY = y + categoryHeight;
       const isR18 = item.ageRating === "R18";
-      context.fillStyle = isR18 ? "#991b1b" : "#e5f2e5";
+      context.fillStyle = isR18 ? "#991b1b" : selectedPalette.background;
       context.fillRect(x, ageY, width, ageHeight);
       fitText(context, isR18 ? "R18" : "全年齢",
         { x:x + padding, y:ageY + 1, width:width - padding * 2, height:ageHeight - 2 },
@@ -1325,7 +1292,7 @@
           maxFont:Math.min(ageHeight * .75, width * .16),
           minFont:1,
           weight:"700",
-          color:isR18 ? "#fff" : "#174b26",
+          color:isR18 ? "#fff" : getReadableTextColor(selectedPalette.background),
           align:"left",
           lineHeight:1
         });
@@ -1419,7 +1386,7 @@
           ? social.header
           : Math.round(trimHeight * (landscape ? .17 : .15));
 
-        context.fillStyle = getEl("headerBgColor").value || "#333333";
+        context.fillStyle = getEl("headerBgColor").value || selectedPalette.main;
         context.fillRect(0, 0, outputWidth, Math.min(outputHeight, bleedTop + headerHeight));
 
         const accentHeight = social
@@ -1433,9 +1400,9 @@
           context,
           social,
           headerHeight,
-          getHeaderStyle("eventInfo", sizes.event, "#ffffff"),
-          getHeaderStyle("spaceInfo", sizes.space, "#ffffff"),
-          getHeaderStyle("circleInfo", sizes.circle, "#ffffff")
+          getHeaderStyle("eventInfo", sizes.event, getReadableTextColor(selectedPalette.main)),
+          getHeaderStyle("spaceInfo", sizes.space, getReadableTextColor(selectedPalette.main)),
+          getHeaderStyle("circleInfo", sizes.circle, getReadableTextColor(selectedPalette.main))
         );
 
         const columns = 2;
