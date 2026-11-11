@@ -51,6 +51,7 @@
     }
 
     .brand h1 { margin: 0; font-size: 14px; line-height: 1.3; }
+
     .brand p {
       overflow: hidden;
       margin: 2px 0 0;
@@ -344,18 +345,22 @@
 
     @media (max-width: 767px) {
       #mainLayout { display: block; overflow: auto; }
+
       #settingsPanel {
         width: 100%;
         max-height: none;
         overflow: visible;
         border: 0;
       }
+
       #settingsContent { overflow: visible; }
+
       #workspace {
         width: 100%;
         height: 75vh;
         min-height: 480px;
       }
+
       #previewToolbar {
         top: auto;
         right: 10px;
@@ -423,10 +428,10 @@
             </select>
           </label>
           <div class="field">
-            添付された配色パターン（4種類）
+            最新の配色パターン（4種類）
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              最明色＝全体背景、最暗色＝ヘッダー・新刊、2番目に暗い色＝年齢区分帯です。カード本体は白です。
+              最明色＝全体背景、最暗色＝ヘッダー・新刊、2番目に明るい色＝年齢区分帯です。カテゴリ帯の文字は白、カード本体は白です。
             </small>
           </div>
           <div id="customBgControls" class="hidden">
@@ -466,7 +471,7 @@
               <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#6E4B1F" class="color-control">
             </label>
             <label class="field">アクセント色
-              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#9C1F11" class="color-control">
+              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#B64466" class="color-control">
             </label>
           </div>
         </section>
@@ -583,7 +588,9 @@
           ? value / 12.92
           : ((value + 0.055) / 1.055) ** 2.4
       );
-      return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+      return 0.2126 * linear[0] +
+        0.7152 * linear[1] +
+        0.0722 * linear[2];
     }
 
     function getLightestColor(colors) {
@@ -602,9 +609,9 @@
       );
     }
 
-    function getSecondDarkestColor(colors) {
+    function getSecondLightestColor(colors) {
       return [...colors].sort(
-        (a, b) => getRelativeLuminance(a) - getRelativeLuminance(b)
+        (a, b) => getRelativeLuminance(b) - getRelativeLuminance(a)
       )[1];
     }
 
@@ -624,34 +631,23 @@
       {
         name:"パターン4",
         colors:["#11349C", "#81A5B5", "#D4D9FF", "#4D6497", "#00364E", "#5C55CD"]
-      },
-      {
-        name:"パターン5",
-        colors:["#EC8B04", "#FBBA7D", "#632F00", "#8B561D", "#C26800", "#AF8D6F"]
-      },
-      {
-        name:"パターン6",
-        colors:["#04ECBE", "#84CAB3", "#BFF8E5", "#005F46", "#00A982", "#4D8473"]
-      },
-      {
-        name:"パターン7",
-        colors:["#0704EC", "#1D48C0", "#DBEBFF", "#112B70", "#96BCFF", "#5388FF"]
-      },
-      {
-        name:"パターン8",
-        colors:["#EC0426", "#E39790", "#9B423E", "#FFC6BF", "#E1655E", "#810002"]
       }
     ].map((palette) => {
       const background = getLightestColor(palette.colors);
       const header = getDarkestColor(palette.colors);
-      const ageBandColor = getSecondDarkestColor(palette.colors);
+      const ageBandColor = getSecondLightestColor(palette.colors);
 
-      // 新刊は最暗色を固定使用。ほかのカテゴリは残りの色を割り当てる。
-      const categoryColors = palette.colors.filter((color) => {
+      // 背景色と年齢区分帯色を除いた4色をカテゴリに利用する。
+      // 最暗色は新刊用として含める。
+      const otherCategoryColors = palette.colors.filter((color) => {
         const normalized = color.toUpperCase();
         return normalized !== background.toUpperCase() &&
           normalized !== ageBandColor.toUpperCase();
       });
+
+      const categoryColors = [header, ...otherCategoryColors.filter(
+        (color) => color.toUpperCase() !== header.toUpperCase()
+      )];
 
       return {
         ...palette,
@@ -772,9 +768,7 @@
 
     function getEl(id) {
       const element = document.getElementById(id);
-      if (!element) {
-        throw new Error(`必要なHTML要素がありません: #${id}`);
-      }
+      if (!element) throw new Error(`必要なHTML要素がありません: #${id}`);
       return element;
     }
 
@@ -786,16 +780,16 @@
       const colors = selectedPalette.categoryColors;
       const colorByCategory = {
         "新刊":selectedPalette.header,
-        "既刊":colors.find((color) => color !== selectedPalette.header) || colors[0],
-        "無料配布":colors.filter((color) => color !== selectedPalette.header)[1] || colors[0],
-        "Web展示":colors.filter((color) => color !== selectedPalette.header)[2] || colors[0]
+        "既刊":colors[1],
+        "無料配布":colors[2],
+        "Web展示":colors[3]
       };
-
       const color = colorByCategory[category] || selectedPalette.header;
 
       return {
         background:color,
-        text:getReadableTextColor(color)
+        // カテゴリ帯の文字色はカテゴリにかかわらず白。
+        text:"#FFFFFF"
       };
     }
 
@@ -846,12 +840,12 @@
       getEl("bgColorPicker").value = palette.background;
 
       getEl("headerBgColor").value = palette.header;
-      getEl("headerAccentColor").value = palette.categoryColors[0];
+      getEl("headerAccentColor").value = palette.categoryColors[1];
 
-      const textColor = getReadableTextColor(palette.header);
-      getEl("eventInfoTextColor").value = textColor;
-      getEl("spaceInfoTextColor").value = textColor;
-      getEl("circleInfoTextColor").value = textColor;
+      const headerTextColor = getReadableTextColor(palette.header);
+      getEl("eventInfoTextColor").value = headerTextColor;
+      getEl("spaceInfoTextColor").value = headerTextColor;
+      getEl("circleInfoTextColor").value = headerTextColor;
 
       getEl("eventInfoBgColor").value = palette.header;
       getEl("spaceInfoBgColor").value = palette.header;
@@ -968,8 +962,7 @@
       updateGuides();
 
       const label = getLayoutLabel();
-      getEl("paperSpecLabel").textContent =
-        `${label}・${selectedPalette.name}`;
+      getEl("paperSpecLabel").textContent = `${label}・${selectedPalette.name}`;
       getEl("dimensionDisplay").textContent = label;
       getEl("layoutHelp").textContent =
         "ヘッダー文字は指定サイズを上限に、領域に合わせて自動調整します。";
@@ -1082,6 +1075,7 @@
             <input id="item-${index}-image" name="item-${index}-image" class="control" type="file" accept="image/*" data-image="${index}" ${item.noImage ? "disabled" : ""}>
           </label>
         `;
+
         root.appendChild(card);
       });
 
@@ -1140,6 +1134,7 @@
             fileInput.disabled = input.checked;
             if (input.checked) fileInput.value = "";
           }
+
           renderCanvas();
         });
       });
@@ -1567,6 +1562,7 @@
         context.fillStyle = fill;
         context.fill();
       }
+
       if (stroke) {
         context.strokeStyle = stroke;
         context.lineWidth = lineWidth;
@@ -1612,7 +1608,7 @@
         Math.max(15, width * .055)
       );
 
-      // 新刊のカテゴリ色は常にパレット内の最暗色。
+      // カテゴリ帯。新刊は最暗色、文字色はカテゴリ共通で白。
       context.fillStyle = categoryStyle.background;
       context.fillRect(x, y, width, categoryHeight);
 
@@ -1630,13 +1626,13 @@
           minFont:1,
           weight:"700",
           family:item.categoryFontFamily,
-          color:categoryStyle.text,
+          color:"#FFFFFF",
           align:"left",
           lineHeight:1
         }
       );
 
-      // 年齢区分帯には2番目に暗い色を使う。
+      // 年齢区分帯にはパレット内の2番目に明るい色を使う。
       const ageY = y + categoryHeight;
       const ageBandColor = selectedPalette.ageBandColor;
 
@@ -1799,8 +1795,8 @@
           ? social.header
           : Math.round(trimHeight * (orientation === "LANDSCAPE" ? .17 : .15));
 
-        // イベント・サークル情報のヘッダー背景はパレット内の最暗色。
-        context.fillStyle = getEl("headerBgColor").value || selectedPalette.header;
+        // ヘッダー背景はパレット内の最暗色。
+        context.fillStyle = selectedPalette.header;
         context.fillRect(
           0,
           0,
@@ -1812,8 +1808,7 @@
           ? Math.max(3, headerHeight * .025)
           : Math.max(8, 12 * trimWidth / 3307);
 
-        context.fillStyle =
-          getEl("headerAccentColor").value || selectedPalette.categoryColors[0];
+        context.fillStyle = selectedPalette.categoryColors[1];
         context.fillRect(
           bleedLeft,
           bleedTop + headerHeight - accentHeight,
@@ -1843,7 +1838,7 @@
         const startY = headerHeight +
           (social ? 10 : Math.max(24 * printScale, safeY));
 
-        // 新刊は常に最暗色のカテゴリ帯。1行最大2枚で、新刊行は1.5倍の高さ。
+        // 新刊は1行に最大2枚、行の高さを通常行の1.5倍にする。
         const rows = [];
 
         items.forEach((item) => {
@@ -2033,6 +2028,7 @@
           : spec.heightMm;
 
       const popup = window.open("", "_blank");
+
       if (!popup) {
         alert("ポップアップを許可してください。");
         return;
