@@ -345,7 +345,7 @@
           <h2>背景デザイン・規定カラー</h2>
           <label class="field">背景の種類
             <select id="bgTypeSelect" name="backgroundType" class="control">
-              <option value="pattern" selected>配色パレットの背景色</option>
+              <option value="palette" selected>配色パレットの最淡色</option>
               <option value="custom">背景画像</option>
               <option value="color">単色カラー</option>
             </select>
@@ -354,7 +354,7 @@
             規定カラー（背景・ヘッダー・頒布物カードに反映）
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              選択した5色パレットを背景・ヘッダー・頒布物カードに反映します。
+              全体背景にはパレット内の最も淡い色、カード本体には白を使用します。
             </small>
           </div>
           <div id="customBgControls" class="hidden">
@@ -391,10 +391,10 @@
           <h2>ヘッダー配色</h2>
           <div class="two-col">
             <label class="field">背景色
-              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#22A1FC" class="color-control">
+              <input id="headerBgColor" name="headerBackgroundColor" type="color" value="#320A28" class="color-control">
             </label>
             <label class="field">アクセント色
-              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#FC7E21" class="color-control">
+              <input id="headerAccentColor" name="headerAccentColor" type="color" value="#8E443D" class="color-control">
             </label>
           </div>
         </section>
@@ -415,7 +415,7 @@
           <label class="check-row">
             イベント情報の背景色
             <input id="eventInfoBgEnabled" name="eventInfoBgEnabled" type="checkbox">
-            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#22A1FC" class="color-control">
+            <input id="eventInfoBgColor" name="eventInfoBgColor" type="color" value="#320A28" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -434,7 +434,7 @@
           <label class="check-row">
             スペース番号の背景色
             <input id="spaceInfoBgEnabled" name="spaceInfoBgEnabled" type="checkbox">
-            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#FCBE21" class="color-control">
+            <input id="spaceInfoBgColor" name="spaceInfoBgColor" type="color" value="#511730" class="color-control">
           </label>
 
           <hr style="border-color:#334155;margin:10px 0">
@@ -453,7 +453,7 @@
           <label class="check-row">
             サークル名の背景色
             <input id="circleInfoBgEnabled" name="circleInfoBgEnabled" type="checkbox">
-            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#22A1FC" class="color-control">
+            <input id="circleInfoBgColor" name="circleInfoBgColor" type="color" value="#320A28" class="color-control">
           </label>
         </section>
 
@@ -502,19 +502,17 @@
     "use strict";
 
     const PALETTES = [
-      { name:"パターン1", background:"#FFFFFF", colors:["#22A1FC","#FCBE21","#FC7E21","#4F6A7D","#7D704F"] },
-      { name:"パターン2", background:"#FFFFFF", colors:["#1B4B56","#57401B","#572D1B","#AECFD6","#D6C7AE"] },
-      { name:"パターン3", background:"#FFFFFF", colors:["#40CCE6","#E6A640","#E66E40","#506366","#665D50"] },
-      { name:"パターン4", background:"#FFFFFF", colors:["#1AE7C5","#E8781A","#E8301A","#406962","#695240"] },
-      { name:"パターン5", background:"#FFFFFF", colors:["#916934","#347091","#524432","#2A363C","#FFF0DB"] },
-      { name:"パターン6", background:"#FFFFFF", colors:["#1ED37B","#D4341E","#3A9468","#7F443C","#365446"] },
-      { name:"パターン7", background:"#FFFFFF", colors:["#1ED37B","#D4531E","#D41E40","#365446","#543F36"] },
-      { name:"パターン8", background:"#FFFFFF", colors:["#5E4849","#495E56","#4B5E49","#DE767B","#76DEB4"] },
-      { name:"パターン9", background:"#FFFFFF", colors:["#FDDCD2","#D2FCF1","#BD9488","#6BA797","#7D4A3B"] },
-      { name:"パターン10", background:"#FFFFFF", colors:["#A35DFA","#FAF85C","#9373BA","#A5A474","#726A7A"] },
-      { name:"パターン11", background:"#FFFFFF", colors:["#69E5F5","#F5A669","#7BAEB5","#A08A7A","#667475"] }
+      { name:"パターン1", colors:["#320A28","#511730","#8E443D","#CB9173","#E0D68A"] },
+      { name:"パターン2", colors:["#91F9E5","#76F7BF","#5FDD9D","#499167","#3F4531"] },
+      { name:"パターン3", colors:["#DDD78D","#DCBF85","#8B635C","#60594D","#93A29B"] },
+      { name:"パターン4", colors:["#EA526F","#E76B74","#D7AF70","#937D64","#585B56"] },
+      { name:"パターン5", colors:["#334139","#1E2D24","#C52184","#E574BC","#F9B4ED"] },
+      { name:"パターン6", colors:["#003844","#006C67","#F194B4","#FFB100","#FFEBC6"] },
+      { name:"パターン7", colors:["#04151F","#183A37","#EFD6AC","#C44900","#432534"] },
+      { name:"パターン8", colors:["#BCABAE","#0F0F0F","#2D2E2E","#716969","#FBFBFB"] }
     ].map((palette) => ({
       ...palette,
+      background:getLightestColor(palette.colors),
       main:palette.colors[0],
       sub:palette.colors[1],
       accent:palette.colors[2],
@@ -579,6 +577,21 @@
     let renderToken = 0;
     let nextItemNumber = 3;
 
+    function getLightestColor(colors) {
+      function luminance(hex) {
+        const channels = hex.replace("#", "").match(/.{2}/g)
+          .map((channel) => parseInt(channel, 16) / 255);
+        const linear = channels.map((value) =>
+          value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4
+        );
+        return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+      }
+
+      return colors.reduce((lightest, color) =>
+        luminance(color) > luminance(lightest) ? color : lightest
+      );
+    }
+
     function makeDefaultItem(number) {
       return {
         category:"新刊",
@@ -624,10 +637,7 @@
         "Web展示":selectedPalette.colors[3]
       }[category] || selectedPalette.colors[0];
 
-      return {
-        background:color,
-        text:getReadableTextColor(color)
-      };
+      return { background:color, text:getReadableTextColor(color) };
     }
 
     function escapeHTML(value) {
@@ -675,7 +685,7 @@
       PALETTES.forEach((preset) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.title = `${preset.name}（背景・カード用5色）`;
+        button.title = `${preset.name}（5色）`;
         const stops = preset.colors.map((color, index) =>
           `${color} ${index * 20}% ${(index + 1) * 20}%`
         ).join(",");
@@ -685,10 +695,10 @@
 
         button.addEventListener("click", () => {
           selectedPalette = preset;
-          root.querySelectorAll("button").forEach((el) => el.classList.remove("selected"));
+          root.querySelectorAll("button").forEach((element) => element.classList.remove("selected"));
           button.classList.add("selected");
 
-          getEl("bgTypeSelect").value = "pattern";
+          getEl("bgTypeSelect").value = "palette";
           getEl("customBgControls").classList.add("hidden");
           getEl("singleColorControls").classList.add("hidden");
           getEl("bgColorPicker").value = preset.background;
@@ -1141,6 +1151,53 @@
       context.restore();
     }
 
+    function fitSingleLine(context, text, box, options = {}) {
+      if (!text) return;
+
+      const family = options.family || "sans-serif";
+      const weight = options.weight || "400";
+      const maxFont = Math.max(1, Number(options.maxFont) || 20);
+      const minFont = Math.max(1, Math.min(maxFont, Number(options.minFont) || 1));
+      const width = Math.max(1, box.width);
+      const height = Math.max(1, box.height);
+      const verticalRatio = options.verticalRatio || 1.15;
+
+      let low = minFont;
+      let high = maxFont;
+      let chosen = minFont;
+
+      for (let i = 0; i < 20; i++) {
+        const size = (low + high) / 2;
+        context.font = `${weight} ${size}px ${family}`;
+        const fits = context.measureText(text).width <= width &&
+          size * verticalRatio <= height;
+
+        if (fits) {
+          chosen = size;
+          low = size;
+        } else {
+          high = size;
+        }
+      }
+
+      context.save();
+      context.beginPath();
+      context.rect(box.x, box.y, width, height);
+      context.clip();
+
+      if (options.background) {
+        context.fillStyle = options.background;
+        context.fillRect(box.x, box.y, width, height);
+      }
+
+      context.font = `${weight} ${chosen}px ${family}`;
+      context.fillStyle = options.color || "#111";
+      context.textAlign = "left";
+      context.textBaseline = "middle";
+      context.fillText(text, box.x, box.y + height / 2, width);
+      context.restore();
+    }
+
     function drawHeader(context, social, headerHeight, eventStyle, spaceStyle, circleStyle) {
       const margin = social ? social.marginX : safeX + 8;
       const x = bleedLeft + margin;
@@ -1150,9 +1207,7 @@
       const eventText = [eventName, eventDate].filter(Boolean).join(" | ");
       const spaceText = getEl("spaceNo").value.trim();
       const circleText = getEl("circleName").value.trim();
-
-      const isPrintLayout = Boolean(PRINT_SPECS[paper]);
-      const useTwoRowHeader = isPrintLayout || orientation === "LANDSCAPE";
+      const useTwoRowHeader = Boolean(PRINT_SPECS[paper]) || orientation === "LANDSCAPE";
 
       if (useTwoRowHeader) {
         const compact = paper === "PICSQUARE";
@@ -1247,53 +1302,6 @@
       });
     }
 
-    function fitSingleLine(context, text, box, options = {}) {
-      if (!text) return;
-
-      const family = options.family || "sans-serif";
-      const weight = options.weight || "400";
-      const maxFont = Math.max(1, Number(options.maxFont) || 20);
-      const minFont = Math.max(1, Math.min(maxFont, Number(options.minFont) || 1));
-      const width = Math.max(1, box.width);
-      const height = Math.max(1, box.height);
-      const verticalRatio = options.verticalRatio || 1.15;
-
-      let low = minFont;
-      let high = maxFont;
-      let chosen = minFont;
-
-      for (let i = 0; i < 20; i++) {
-        const size = (low + high) / 2;
-        context.font = `${weight} ${size}px ${family}`;
-        const fits = context.measureText(text).width <= width &&
-          size * verticalRatio <= height;
-
-        if (fits) {
-          chosen = size;
-          low = size;
-        } else {
-          high = size;
-        }
-      }
-
-      context.save();
-      context.beginPath();
-      context.rect(box.x, box.y, width, height);
-      context.clip();
-
-      if (options.background) {
-        context.fillStyle = options.background;
-        context.fillRect(box.x, box.y, width, height);
-      }
-
-      context.font = `${weight} ${chosen}px ${family}`;
-      context.fillStyle = options.color || "#111";
-      context.textAlign = "left";
-      context.textBaseline = "middle";
-      context.fillText(text, box.x, box.y + height / 2, width);
-      context.restore();
-    }
-
     function roundRect(context, x, y, width, height, radius, fill, stroke, lineWidth = 1) {
       const r = Math.max(0, Math.min(radius, width / 2, height / 2));
       context.beginPath();
@@ -1321,7 +1329,7 @@
 
     function drawCard(context, item, x, y, width, height, config, landscape) {
       const padding = config.padding;
-      roundRect(context, x, y, width, height, config.radius, "#fff", "#cbd5e1", config.borderWidth);
+      roundRect(context, x, y, width, height, config.radius, "#FFFFFF", "#cbd5e1", config.borderWidth);
 
       context.save();
       roundRect(context, x, y, width, height, config.radius, null, null);
@@ -1505,7 +1513,7 @@
         const padding = social ? social.padding : Math.round(25 * scale);
         const startY = headerHeight + (social ? 10 : Math.max(24 * scale, safeY));
 
-        // 同じ種類のカードを1行に最大2枚配置し、新刊行は1.5倍の高さにする。
+        // 同じ種類のカードを1行に最大2枚並べ、新刊の行は通常の1.5倍の高さにする。
         const rows = [];
         items.forEach((item) => {
           const isNewRelease = item.category === "新刊";
@@ -1693,8 +1701,7 @@
       getEl("orientationSelect").addEventListener("change", updateLayout);
 
       ["eventDate", "eventName", "circleName", "spaceNo"].forEach((id) => {
-        const element = document.getElementById(id);
-        if (element) element.addEventListener("input", renderCanvas);
+        getEl(id).addEventListener("input", renderCanvas);
       });
 
       [
@@ -1707,10 +1714,7 @@
         "circleInfoBgEnabled", "circleInfoBgColor"
       ].forEach((id) => {
         const element = document.getElementById(id);
-        if (!element) {
-          console.warn(`設定欄 #${id} がないため、イベント登録を省略しました。`);
-          return;
-        }
+        if (!element) return;
         element.addEventListener("input", renderCanvas);
         element.addEventListener("change", renderCanvas);
       });
