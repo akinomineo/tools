@@ -66,7 +66,11 @@
       white-space: nowrap;
     }
 
-    .actions { display: flex; flex: 0 0 auto; gap: 6px; }
+    .actions {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 6px;
+    }
 
     .button {
       border: 0;
@@ -77,7 +81,8 @@
       font-weight: 700;
     }
 
-    .button-print { background: #475569; }
+    .button-preview { background: #475569; }
+    .button-pdf { background: #7c3aed; }
     .button-png { background: #059669; }
 
     #mainLayout {
@@ -373,6 +378,9 @@
         left: 10px;
         justify-content: center;
       }
+
+      .actions { gap: 4px; }
+      .button { padding: 7px 8px; font-size: 10px; }
     }
   </style>
 </head>
@@ -387,7 +395,8 @@
       </div>
     </div>
     <div class="actions">
-      <button id="printPreviewBtn" class="button button-print" type="button">プレビュー・PDF</button>
+      <button id="actualSizePreviewBtn" class="button button-preview" type="button">実寸大プレビュー</button>
+      <button id="pdfExportBtn" class="button button-pdf" type="button">PDF出力</button>
       <button id="exportPng" class="button button-png" type="button">PNG保存</button>
     </div>
   </header>
@@ -666,13 +675,11 @@
       const ageBandColor = getSecondLightestColor(palette.colors);
       const mostVivid = getMostVividColor(palette.colors);
 
-      const nonBackgroundColors = palette.colors.filter(
-        (color) => color.toUpperCase() !== background.toUpperCase()
-      );
-
-      const otherCategoryColors = nonBackgroundColors.filter(
-        (color) => color.toUpperCase() !== ageBandColor.toUpperCase()
-      );
+      const otherCategoryColors = palette.colors.filter((color) => {
+        const normalized = color.toUpperCase();
+        return normalized !== background.toUpperCase() &&
+          normalized !== ageBandColor.toUpperCase();
+      });
 
       const categoryColors = [
         header,
@@ -820,9 +827,7 @@
 
     function getEl(id) {
       const element = document.getElementById(id);
-      if (!element) {
-        throw new Error(`必要なHTML要素がありません: #${id}`);
-      }
+      if (!element) throw new Error(`必要なHTML要素がありません: #${id}`);
       return element;
     }
 
@@ -1145,6 +1150,7 @@
             fileInput.disabled = input.checked;
             if (input.checked) fileInput.value = "";
           }
+
           renderCanvas();
         });
       });
@@ -1318,8 +1324,11 @@
       const family = options.family || "sans-serif";
       const weight = options.weight || "400";
       const maxFont = Math.max(1, Number(options.maxFont) || 20);
-      const minFont = Math.max(1, Number(options.minFont) || 1);
-      const lineRatio = options.lineHeight || 1;
+      const minFont = Math.max(
+        1,
+        Math.min(maxFont, Number(options.minFont) || 1)
+      );
+      const lineRatio = options.lineHeight || 1.12;
       const width = Math.max(1, box.width);
       const height = Math.max(1, box.height);
 
@@ -1395,7 +1404,7 @@
       );
       const width = Math.max(1, box.width);
       const height = Math.max(1, box.height);
-      const verticalRatio = options.verticalRatio || 1.1;
+      const verticalRatio = options.verticalRatio || 1.15;
 
       let low = minFont;
       let high = maxFont;
@@ -1527,7 +1536,7 @@
         color:eventStyle.color,
         background:eventStyle.background,
         align:"left",
-        lineHeight:1
+        lineHeight:1.12
       });
 
       y += rowHeight + gap;
@@ -1539,7 +1548,7 @@
         color:spaceStyle.color,
         background:spaceStyle.background,
         align:"left",
-        lineHeight:1
+        lineHeight:1.12
       });
 
       y += rowHeight + gap;
@@ -1550,7 +1559,7 @@
         family:circleStyle.family,
         color:circleStyle.color,
         align:"left",
-        lineHeight:1
+        lineHeight:1.12
       });
     }
 
@@ -1573,7 +1582,6 @@
         context.fillStyle = fill;
         context.fill();
       }
-
       if (stroke) {
         context.strokeStyle = stroke;
         context.lineWidth = lineWidth;
@@ -1586,7 +1594,6 @@
       const categoryStyle = getCategoryStyle(item.category);
       const cardFontFamily = getCardFontFamily();
 
-      // カード本体は白。
       roundRect(
         context,
         x,
@@ -1620,7 +1627,7 @@
         Math.max(15, width * .055)
       );
 
-      // 新刊はパレット内の最暗色。カテゴリ文字色は白。
+      // 新刊はパレット内の最暗色、カテゴリ帯文字は白。
       context.fillStyle = categoryStyle.background;
       context.fillRect(x, y, width, categoryHeight);
 
@@ -1640,7 +1647,7 @@
           family:cardFontFamily,
           color:"#FFFFFF",
           align:"left",
-          lineHeight:.94
+          lineHeight:1.12
         }
       );
 
@@ -1667,7 +1674,7 @@
           family:cardFontFamily,
           color:getReadableTextColor(ageBandColor),
           align:"left",
-          lineHeight:.94
+          lineHeight:1.12
         }
       );
 
@@ -1699,52 +1706,58 @@
         textWidth = Math.max(1, x + width - padding - textX);
       }
 
-      const hasTitle = Boolean(item.title);
-      const hasPrice =
-        !["無料配布","Web展示"].includes(item.category) &&
-        Boolean(item.price);
-      const hasDescription = Boolean(item.desc);
-
       const blocks = [];
-      if (hasTitle) blocks.push({ type:"title", text:item.title });
-      if (hasPrice) blocks.push({ type:"price", text:item.price });
-      if (hasDescription) blocks.push({ type:"description", text:item.desc });
+      if (item.title) blocks.push({ type:"title", text:item.title });
+
+      if (!["無料配布","Web展示"].includes(item.category) && item.price) {
+        blocks.push({ type:"price", text:item.price });
+      }
+
+      if (item.desc) blocks.push({ type:"description", text:item.desc });
 
       if (blocks.length) {
-        // 項目間の余白を小さくし、残りの高さを各欄に配分する。
-        const gap = Math.max(0, contentHeight * .012);
+        // 行間は以前の間隔に戻し、タイトル・価格に多めの高さを配分。
+        const gap = Math.max(2, contentHeight * .025);
         const totalGap = gap * Math.max(0, blocks.length - 1);
-        const usableHeight = Math.max(1, contentHeight - totalGap);
+        const availableHeight = Math.max(1, contentHeight - totalGap);
 
         const weights = blocks.map((block) => {
-          if (block.type === "title") return .29;
-          if (block.type === "price") return .20;
-          return .51;
+          if (block.type === "title") return .38;
+          if (block.type === "price") return .30;
+          return .32;
         });
-        const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
 
+        const weightTotal = weights.reduce((sum, weight) => sum + weight, 0);
         let cursorY = contentTop;
 
         blocks.forEach((block, index) => {
-          const blockHeight = usableHeight * weights[index] / weightTotal;
+          const blockHeight = availableHeight * weights[index] / weightTotal;
           let maxFont;
           let color;
-          let weight;
+          let fontWeight;
 
           if (block.type === "title") {
-            maxFont = Math.min(blockHeight * .82, textWidth * .19) * textScale;
+            // タイトルはカードに合わせて大きく自動調整。
+            maxFont = Math.min(blockHeight * 1.02, textWidth * .30) * textScale;
             color = "#0f172a";
-            weight = "700";
+            fontWeight = "700";
           } else if (block.type === "price") {
-            maxFont = Math.min(blockHeight * .9, textWidth * .22) * textScale;
+            // 価格も目立つよう大きくし、最も鮮やかな色を使う。
+            maxFont = Math.min(blockHeight * 1.08, textWidth * .32) * textScale;
             color = selectedPalette.mostVivid;
-            weight = "700";
+            fontWeight = "700";
           } else {
-            // 説明文は入力欄を使わず、カード内の割当領域に合わせて自動縮小。
-            maxFont = Math.min(blockHeight * .78, textWidth * .16) * textScale;
+            // 説明文はタイトルや価格より小さく、割当領域に合わせて自動縮小。
+            maxFont = Math.min(blockHeight * .72, textWidth * .17) * textScale;
             color = "#475569";
-            weight = "400";
+            fontWeight = "400";
           }
+
+          const safeMaxFont = Math.max(4, maxFont);
+          const safeMinFont = Math.min(
+            safeMaxFont,
+            Math.max(1, 5 * textScale)
+          );
 
           fitText(
             context,
@@ -1756,13 +1769,13 @@
               height:blockHeight
             },
             {
-              maxFont:Math.max(4, maxFont),
-              minFont:Math.max(4, 7 * textScale),
+              maxFont:safeMaxFont,
+              minFont:safeMinFont,
               family:cardFontFamily,
               color,
-              weight,
+              weight:fontWeight,
               align:"left",
-              lineHeight:.94
+              lineHeight:1.12
             }
           );
 
@@ -1812,7 +1825,7 @@
           ? social.header
           : Math.round(trimHeight * (orientation === "LANDSCAPE" ? .17 : .15));
 
-        context.fillStyle = selectedPalette.header;
+        context.fillStyle = getEl("headerBgColor").value || selectedPalette.header;
         context.fillRect(
           0,
           0,
@@ -1824,7 +1837,8 @@
           ? Math.max(3, headerHeight * .025)
           : Math.max(8, 12 * trimWidth / 3307);
 
-        context.fillStyle = selectedPalette.categoryColors[1];
+        context.fillStyle =
+          getEl("headerAccentColor").value || selectedPalette.categoryColors[1];
         context.fillRect(
           bleedLeft,
           bleedTop + headerHeight - accentHeight,
@@ -2026,7 +2040,89 @@
       handle.addEventListener("pointercancel", finish);
     }
 
-    function openPrintPreview() {
+    function makeOutputWindow(title, imageUrl, imageStyle, printAfterLoad = false) {
+      const popup = window.open("", "_blank");
+
+      if (!popup) {
+        alert("ポップアップを許可してください。");
+        return null;
+      }
+
+      const doc = popup.document;
+      doc.open();
+      doc.write(`<!DOCTYPE html>
+        <html lang="ja">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <title>${escapeHTML(title)}</title>
+          <style>
+            * { box-sizing: border-box; }
+            html, body { margin:0; padding:0; }
+            body {
+              min-width:100%;
+              min-height:100vh;
+              background:#334155;
+              color:#f8fafc;
+              font-family:Arial,sans-serif;
+            }
+            .toolbar {
+              position:sticky;
+              top:0;
+              z-index:2;
+              padding:10px 14px;
+              background:#0f172a;
+              font-size:14px;
+            }
+            .page {
+              width:max-content;
+              min-width:100%;
+              padding:20px;
+              overflow:auto;
+            }
+            img {
+              display:block;
+              ${imageStyle}
+            }
+            @media print {
+              .toolbar { display:none; }
+              .page { padding:0; overflow:visible; }
+              body { background:#fff; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="toolbar">${escapeHTML(title)} — ${outputWidth} × ${outputHeight}px</div>
+          <div class="page"><img id="outputImage" alt="${escapeHTML(title)}"></div>
+        </body>
+        </html>`);
+      doc.close();
+
+      const image = doc.getElementById("outputImage");
+      image.onload = () => {
+        if (printAfterLoad) {
+          popup.focus();
+          popup.print();
+        }
+      };
+      image.src = imageUrl;
+      return popup;
+    }
+
+    function openActualSizePreview() {
+      renderCanvas();
+
+      const imageUrl = canvas.toDataURL("image/png");
+      makeOutputWindow(
+        "実寸大プレビュー",
+        imageUrl,
+        `width:${outputWidth}px;height:${outputHeight}px;max-width:none;`
+      );
+    }
+
+    function openPdfExport() {
+      renderCanvas();
+
       const isSocial = Boolean(SOCIAL_PRESETS[paper]);
       const spec = PRINT_SPECS[paper];
 
@@ -2042,46 +2138,14 @@
           ? spec.widthMm
           : spec.heightMm;
 
-      const popup = window.open("", "_blank");
-      if (!popup) {
-        alert("ポップアップを許可してください。");
-        return;
-      }
+      const imageUrl = canvas.toDataURL("image/png");
 
-      const doc = popup.document;
-      doc.title = "印刷プレビュー";
-
-      const meta = doc.createElement("meta");
-      meta.setAttribute("charset", "UTF-8");
-      doc.head.appendChild(meta);
-
-      const style = doc.createElement("style");
-      style.textContent = `
-        @page { size:${widthMm}mm ${heightMm}mm; margin:0; }
-        html,body { margin:0; padding:0; }
-        img { display:block; width:${widthMm}mm; height:${heightMm}mm; }
-        @media screen {
-          body {
-            min-height:100vh;
-            display:grid;
-            place-items:center;
-            padding:24px;
-            background:#1e293b;
-          }
-          img { width:min(90vw,${widthMm}mm); height:auto; }
-        }
-      `;
-      doc.head.appendChild(style);
-
-      const image = doc.createElement("img");
-      image.alt = "印刷用プレビュー";
-      image.src = canvas.toDataURL("image/png");
-      doc.body.appendChild(image);
-
-      image.addEventListener("load", () => {
-        popup.focus();
-        popup.print();
-      }, { once:true });
+      makeOutputWindow(
+        "PDF出力",
+        imageUrl,
+        `width:${widthMm}mm;height:${heightMm}mm;max-width:none;`,
+        true
+      );
     }
 
     function bindEvents() {
@@ -2092,7 +2156,6 @@
         getEl(id).addEventListener("input", renderCanvas);
       });
 
-      // フォント選択箇所はヘッダーとカード全体の2か所のみ。
       ["headerFontFamily", "cardFontFamily"].forEach((id) => {
         getEl(id).addEventListener("change", async (event) => {
           const family = event.target.value;
@@ -2172,7 +2235,8 @@
         applyScale(Number(event.target.value) / 100);
       });
 
-      getEl("printPreviewBtn").addEventListener("click", openPrintPreview);
+      getEl("actualSizePreviewBtn").addEventListener("click", openActualSizePreview);
+      getEl("pdfExportBtn").addEventListener("click", openPdfExport);
 
       getEl("exportPng").addEventListener("click", () => {
         renderCanvas();
