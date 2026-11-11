@@ -1427,19 +1427,21 @@
         const padding = social ? social.padding : Math.round(25 * scale);
         const startY = headerHeight + (social ? 10 : Math.max(24 * scale, safeY));
 
-        // 新刊は通常カードと同じ幅で高さ1.5倍、その他は2列で配置する。
+        // 同じ種類のカードを1行に最大2枚配置し、新刊行は1.5倍の高さにする。
         const rows = [];
         items.forEach((item) => {
-          if (item.category === "新刊") {
-            rows.push({ items:[item], units:1.5, fullWidth:false });
-            return;
-          }
-
+          const isNewRelease = item.category === "新刊";
           let row = rows[rows.length - 1];
-          if (!row || row.fullWidth || row.items.length >= columns) {
-            row = { items:[], units:1, fullWidth:false };
+
+          if (!row || row.isNewRelease !== isNewRelease || row.items.length >= columns) {
+            row = {
+              items:[],
+              units:isNewRelease ? 1.5 : 1,
+              isNewRelease
+            };
             rows.push(row);
           }
+
           row.items.push(item);
         });
 
@@ -1472,10 +1474,12 @@
           if (token !== renderToken) return;
 
           const cardHeight = unitHeight * row.units;
+
           row.items.forEach((item, columnIndex) => {
             const x = bleedLeft + marginX + columnIndex * (cardWidth + gapX);
             drawCard(context, item, x, y, cardWidth, cardHeight, config, landscape);
           });
+
           y += cardHeight + gapY;
         });
       } catch (error) {
