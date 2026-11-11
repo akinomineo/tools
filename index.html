@@ -301,7 +301,7 @@
       <div class="brand-icon" aria-hidden="true">✦</div>
       <div>
         <h1>同人おしながきジェネレーター</h1>
-        <p id="paperSpecLabel">A3縦・冬・お正月配色</p>
+        <p id="paperSpecLabel">A3縦・パターン1</p>
       </div>
     </div>
     <div class="actions">
@@ -357,13 +357,6 @@
               選択した4色パレットを背景・ヘッダー・頒布物カードに反映します。
             </small>
           </div>
-          <div id="patternControls">
-            <label class="field">背景パターン
-              <select id="patternStyleSelect" name="patternStyle" class="control">
-                <option value="solid" selected>無地</option>
-              </select>
-            </label>
-          </div>
           <div id="customBgControls" class="hidden">
             <label class="field">背景画像
               <input id="customBgInput" name="customBackground" type="file" accept="image/*" class="control">
@@ -386,7 +379,7 @@
           </label>
           <div class="two-col">
             <label class="field">サークル名
-              <input id="circleName" name="circleName" type="text" value="暁の稜線" class="control">
+              <input id="circleName" name="circleName" type="text" value="テストサークル" class="control">
             </label>
             <label class="field">スペース番号
               <input id="spaceNo" name="spaceNo" type="text" value="東7ホール あ-01a" class="control">
@@ -416,6 +409,9 @@
               <input id="eventInfoTextColor" name="eventInfoTextColor" type="color" value="#ffffff" class="color-control">
             </label>
           </div>
+          <label class="field">イベント名・日時フォント
+            <select id="eventInfoFontFamily" name="eventInfoFontFamily" class="control"></select>
+          </label>
           <label class="check-row">
             イベント情報の背景色
             <input id="eventInfoBgEnabled" name="eventInfoBgEnabled" type="checkbox">
@@ -432,6 +428,9 @@
               <input id="spaceInfoTextColor" name="spaceInfoTextColor" type="color" value="#ffffff" class="color-control">
             </label>
           </div>
+          <label class="field">スペース番号フォント
+            <select id="spaceInfoFontFamily" name="spaceInfoFontFamily" class="control"></select>
+          </label>
           <label class="check-row">
             スペース番号の背景色
             <input id="spaceInfoBgEnabled" name="spaceInfoBgEnabled" type="checkbox">
@@ -448,6 +447,9 @@
               <input id="circleInfoTextColor" name="circleInfoTextColor" type="color" value="#ffffff" class="color-control">
             </label>
           </div>
+          <label class="field">サークル名フォント
+            <select id="circleInfoFontFamily" name="circleInfoFontFamily" class="control"></select>
+          </label>
           <label class="check-row">
             サークル名の背景色
             <input id="circleInfoBgEnabled" name="circleInfoBgEnabled" type="checkbox">
@@ -500,15 +502,24 @@
     "use strict";
 
     const PALETTES = [
-      { name:"冬・お正月", background:"#F5F7F8", main:"#DC3232", sub:"#3C553C", accent:"#F5C850" },
-      { name:"春・進級進学", background:"#F5EEDC", main:"#F5B4C8", sub:"#A0D2AA", accent:"#EB786E" },
-      { name:"夏・海やプール", background:"#EBFAFA", main:"#008CD2", sub:"#5AD2DC", accent:"#F5963C" },
-      { name:"秋・ハロウィン", background:"#F0E6C8", main:"#EB8732", sub:"#73825F", accent:"#502D5A" },
-      { name:"クール系", background:"#F0F3F5", main:"#1E2D50", sub:"#A0AAB4", accent:"#5AAAE6" },
-      { name:"山の配色", background:"#EBE1C8", main:"#37553C", sub:"#788C69", accent:"#64462D" },
-      { name:"海の配色", background:"#FAF8F0", main:"#468CB9", sub:"#5FC8C8", accent:"#E1CDA5" },
-      { name:"華やか系イベント・セール", background:"#FAF5E1", main:"#FF5587", sub:"#5ACDD7", accent:"#5F376E" },
-      { name:"モノトーン", background:"#F8F8F5", main:"#464646", sub:"#AAAAAA", accent:"#2D78BE" }
+      { name:"パターン1", background:"#F5F7F8", main:"#DC3232", sub:"#3C553C", accent:"#F5C850" },
+      { name:"パターン2", background:"#F5EEDC", main:"#F5B4C8", sub:"#A0D2AA", accent:"#EB786E" },
+      { name:"パターン3", background:"#EBFAFA", main:"#008CD2", sub:"#5AD2DC", accent:"#F5963C" },
+      { name:"パターン4", background:"#F0E6C8", main:"#EB8732", sub:"#73825F", accent:"#502D5A" },
+      { name:"パターン5", background:"#F0F3F5", main:"#1E2D50", sub:"#A0AAB4", accent:"#5AAAE6" },
+      { name:"パターン6", background:"#EBE1C8", main:"#37553C", sub:"#788C69", accent:"#64462D" },
+      { name:"パターン7", background:"#FAF8F0", main:"#468CB9", sub:"#5FC8C8", accent:"#E1CDA5" },
+      { name:"パターン8", background:"#FAF5E1", main:"#FF5587", sub:"#5ACDD7", accent:"#5F376E" },
+      { name:"パターン9", background:"#F8F8F5", main:"#464646", sub:"#AAAAAA", accent:"#2D78BE" }
+    ];
+
+    const FONT_FAMILIES = [
+      { label:"Noto Sans JP", value:'"Noto Sans JP", sans-serif' },
+      { label:"游ゴシック", value:'"Yu Gothic", sans-serif' },
+      { label:"メイリオ", value:"Meiryo, sans-serif" },
+      { label:"ゴシック体", value:"sans-serif" },
+      { label:"明朝体", value:"serif" },
+      { label:"等幅", value:"monospace" }
     ];
 
     const PRINT_SPECS = {
@@ -539,6 +550,7 @@
       PICREA: { event:30, space:50, circle:50 }
     };
 
+    const DEFAULT_FONT_FAMILY = '"Noto Sans JP", sans-serif';
     const BLEED_MM = 3;
     const canvas = document.getElementById("previewCanvas");
 
@@ -566,6 +578,11 @@
         price:"500円",
         desc:"サンプルテキスト",
         descriptionFontSize:38,
+        categoryFontFamily:DEFAULT_FONT_FAMILY,
+        ageRatingFontFamily:DEFAULT_FONT_FAMILY,
+        titleFontFamily:DEFAULT_FONT_FAMILY,
+        priceFontFamily:DEFAULT_FONT_FAMILY,
+        descFontFamily:DEFAULT_FONT_FAMILY,
         image:null,
         imageWidth:0,
         imageHeight:0,
@@ -604,9 +621,16 @@
       };
     }
 
+    function fontFamilyOptions(selected) {
+      return FONT_FAMILIES.map(({ label, value }) =>
+        `<option value="${escapeHTML(value)}" ${selected === value ? "selected" : ""}>${escapeHTML(label)}</option>`
+      ).join("");
+    }
+
     function initialize() {
       try {
         buildPalette();
+        initializeHeaderFontControls();
         renderItems();
         bindEvents();
         updateLayout();
@@ -618,6 +642,14 @@
         const label = document.getElementById("paperSpecLabel");
         if (label) label.textContent = `初期化エラー: ${error.message}`;
       }
+    }
+
+    function initializeHeaderFontControls() {
+      ["eventInfoFontFamily", "spaceInfoFontFamily", "circleInfoFontFamily"].forEach((id) => {
+        const select = getEl(id);
+        select.innerHTML = fontFamilyOptions(DEFAULT_FONT_FAMILY);
+        select.value = DEFAULT_FONT_FAMILY;
+      });
     }
 
     function buildPalette() {
@@ -638,7 +670,6 @@
           button.classList.add("selected");
 
           getEl("bgTypeSelect").value = "pattern";
-          getEl("patternControls").classList.remove("hidden");
           getEl("customBgControls").classList.add("hidden");
           getEl("singleColorControls").classList.add("hidden");
           getEl("bgColorPicker").value = preset.background;
@@ -781,15 +812,40 @@
               </select>
             </label>
           </div>
+          <label class="field">カテゴリ文字フォント
+            <select id="item-${index}-categoryFontFamily" name="item-${index}-categoryFontFamily" class="control" data-index="${index}" data-key="categoryFontFamily">
+              ${fontFamilyOptions(item.categoryFontFamily)}
+            </select>
+          </label>
+          <label class="field">年齢区分文字フォント
+            <select id="item-${index}-ageRatingFontFamily" name="item-${index}-ageRatingFontFamily" class="control" data-index="${index}" data-key="ageRatingFontFamily">
+              ${fontFamilyOptions(item.ageRatingFontFamily)}
+            </select>
+          </label>
           <label class="field">タイトル
             <input id="item-${index}-title" name="item-${index}-title" class="control" type="text" data-index="${index}" data-key="title" value="${escapeHTML(item.title)}">
+          </label>
+          <label class="field">タイトル文字フォント
+            <select id="item-${index}-titleFontFamily" name="item-${index}-titleFontFamily" class="control" data-index="${index}" data-key="titleFontFamily">
+              ${fontFamilyOptions(item.titleFontFamily)}
+            </select>
           </label>
           <label class="field">価格（無料配布・Web展示は空欄）
             <input id="item-${index}-price" name="item-${index}-price" class="control" type="text" data-index="${index}" data-key="price"
               value="${escapeHTML(item.price)}" ${["無料配布","Web展示"].includes(item.category) ? "disabled" : ""}>
           </label>
+          <label class="field">価格文字フォント
+            <select id="item-${index}-priceFontFamily" name="item-${index}-priceFontFamily" class="control" data-index="${index}" data-key="priceFontFamily">
+              ${fontFamilyOptions(item.priceFontFamily)}
+            </select>
+          </label>
           <label class="field">説明
             <textarea id="item-${index}-desc" name="item-${index}-desc" class="control" data-index="${index}" data-key="desc" rows="3">${escapeHTML(item.desc)}</textarea>
+          </label>
+          <label class="field">説明文字フォント
+            <select id="item-${index}-descFontFamily" name="item-${index}-descFontFamily" class="control" data-index="${index}" data-key="descFontFamily">
+              ${fontFamilyOptions(item.descFontFamily)}
+            </select>
           </label>
           <label class="field">説明文フォントサイズ
             <input id="item-${index}-descriptionFontSize" name="item-${index}-descriptionFontSize" class="control" type="number" min="8" max="100" data-index="${index}" data-key="descriptionFontSize" value="${item.descriptionFontSize}">
@@ -959,6 +1015,7 @@
         context.drawImage(customBackground, 0, 0, outputWidth, outputHeight);
         return;
       }
+
       context.fillStyle = selectedPalette.background;
       context.fillRect(0, 0, outputWidth, outputHeight);
     }
@@ -966,11 +1023,13 @@
     function getHeaderStyle(prefix, defaultSize, defaultColor) {
       const sizeEl = document.getElementById(`${prefix}FontSize`);
       const colorEl = document.getElementById(`${prefix}TextColor`);
+      const familyEl = document.getElementById(`${prefix}FontFamily`);
       const enabledEl = document.getElementById(`${prefix}BgEnabled`);
       const bgColorEl = document.getElementById(`${prefix}BgColor`);
       const size = Number.parseInt(sizeEl ? sizeEl.value : "", 10);
       return {
         size:Number.isFinite(size) ? size : defaultSize,
+        family:(familyEl && familyEl.value) || DEFAULT_FONT_FAMILY,
         color:(colorEl && colorEl.value) || defaultColor,
         background:enabledEl && enabledEl.checked && bgColorEl ? bgColorEl.value : ""
       };
@@ -1097,7 +1156,7 @@
           maxFont:eventStyle.size,
           minFont:social ? 5 : 8,
           weight:"700",
-          family:'"Noto Sans JP", sans-serif',
+          family:eventStyle.family,
           color:eventStyle.color,
           background:eventStyle.background
         });
@@ -1114,7 +1173,7 @@
           maxFont:spaceStyle.size,
           minFont:social ? 5 : 8,
           weight:"700",
-          family:'"M PLUS Rounded 1c", sans-serif',
+          family:spaceStyle.family,
           color:spaceStyle.color,
           background:spaceStyle.background
         });
@@ -1128,7 +1187,7 @@
           maxFont:circleStyle.size,
           minFont:social ? 5 : 8,
           weight:"700",
-          family:'"Noto Sans JP", sans-serif',
+          family:circleStyle.family,
           color:circleStyle.color,
           background:circleStyle.background
         });
@@ -1147,6 +1206,7 @@
           maxFont:eventStyle.size,
           minFont:6,
           weight:"700",
+          family:eventStyle.family,
           color:eventStyle.color,
           background:eventStyle.background
         });
@@ -1158,7 +1218,7 @@
           maxFont:spaceStyle.size,
           minFont:6,
           weight:"700",
-          family:'"M PLUS Rounded 1c", sans-serif',
+          family:spaceStyle.family,
           color:spaceStyle.color,
           background:spaceStyle.background,
           align:"left",
@@ -1172,6 +1232,7 @@
           maxFont:circleStyle.size,
           minFont:6,
           weight:"700",
+          family:circleStyle.family,
           color:circleStyle.color,
           align:"left",
           lineHeight:1
@@ -1284,6 +1345,7 @@
           maxFont:Math.min(categoryHeight * .78, width * .2),
           minFont:1,
           weight:"700",
+          family:item.categoryFontFamily,
           color:style.text,
           align:"left",
           lineHeight:1
@@ -1299,6 +1361,7 @@
           maxFont:Math.min(ageHeight * .75, width * .16),
           minFont:1,
           weight:"700",
+          family:item.ageRatingFontFamily,
           color:isR18 ? "#fff" : getReadableTextColor(selectedPalette.background),
           align:"left",
           lineHeight:1
@@ -1311,9 +1374,10 @@
       let imageBox = null;
 
       if (item.image && !item.noImage) {
+        const imageWidthRatio = item.category === "新刊" ? .48 : .36;
         const imageScale = Math.min(
-          width * (landscape ? .38 : .36) / Math.max(1, item.imageWidth),
-          bodyHeight / Math.max(1, item.imageHeight)
+          width * imageWidthRatio / Math.max(1, item.imageWidth),
+          bodyHeight * .96 / Math.max(1, item.imageHeight)
         );
         const imageWidth = item.imageWidth * imageScale;
         const imageHeight = item.imageHeight * imageScale;
@@ -1333,6 +1397,7 @@
           text:item.title,
           ratio:.42,
           max:78 * textScale,
+          family:item.titleFontFamily,
           color:"#0f172a",
           weight:"700"
         });
@@ -1342,6 +1407,7 @@
           text:item.price,
           ratio:.28,
           max:100 * textScale,
+          family:item.priceFontFamily,
           color:style.background,
           weight:"700"
         });
@@ -1351,6 +1417,7 @@
           text:item.desc,
           ratio:.30,
           max:Math.max(8, Math.min(100, Number(item.descriptionFontSize) || 38)) * textScale,
+          family:item.descFontFamily,
           color:"#475569",
           weight:"400"
         });
@@ -1366,6 +1433,7 @@
           {
             maxFont:part.max,
             minFont:Math.max(4, 7 * textScale),
+            family:part.family,
             color:part.color,
             weight:part.weight,
             align:"left"
@@ -1474,12 +1542,10 @@
           if (token !== renderToken) return;
 
           const cardHeight = unitHeight * row.units;
-
           row.items.forEach((item, columnIndex) => {
             const x = bleedLeft + marginX + columnIndex * (cardWidth + gapX);
             drawCard(context, item, x, y, cardWidth, cardHeight, config, landscape);
           });
-
           y += cardHeight + gapY;
         });
       } catch (error) {
@@ -1621,11 +1687,11 @@
 
       [
         "headerBgColor", "headerAccentColor",
-        "eventInfoFontSize", "eventInfoTextColor",
+        "eventInfoFontSize", "eventInfoTextColor", "eventInfoFontFamily",
         "eventInfoBgEnabled", "eventInfoBgColor",
-        "spaceInfoFontSize", "spaceInfoTextColor",
+        "spaceInfoFontSize", "spaceInfoTextColor", "spaceInfoFontFamily",
         "spaceInfoBgEnabled", "spaceInfoBgColor",
-        "circleInfoFontSize", "circleInfoTextColor",
+        "circleInfoFontSize", "circleInfoTextColor", "circleInfoFontFamily",
         "circleInfoBgEnabled", "circleInfoBgColor"
       ].forEach((id) => {
         const element = document.getElementById(id);
@@ -1639,13 +1705,11 @@
 
       getEl("bgTypeSelect").addEventListener("change", (event) => {
         const type = event.target.value;
-        getEl("patternControls").classList.toggle("hidden", type !== "pattern");
         getEl("customBgControls").classList.toggle("hidden", type !== "custom");
         getEl("singleColorControls").classList.toggle("hidden", type !== "color");
         renderCanvas();
       });
 
-      getEl("patternStyleSelect").addEventListener("change", renderCanvas);
       getEl("bgColorPicker").addEventListener("input", renderCanvas);
 
       getEl("customBgInput").addEventListener("change", async (event) => {
