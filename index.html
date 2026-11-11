@@ -637,7 +637,6 @@
           root.querySelectorAll("button").forEach((el) => el.classList.remove("selected"));
           button.classList.add("selected");
 
-          // パレット選択を背景にも反映し、カスタム画像・単色モードから切り替える。
           getEl("bgTypeSelect").value = "pattern";
           getEl("patternControls").classList.remove("hidden");
           getEl("customBgControls").classList.add("hidden");
@@ -960,11 +959,6 @@
         context.drawImage(customBackground, 0, 0, outputWidth, outputHeight);
         return;
       }
-      if (type === "pattern") {
-        context.fillStyle = selectedPalette.background;
-        context.fillRect(0, 0, outputWidth, outputHeight);
-        return;
-      }
       context.fillStyle = selectedPalette.background;
       context.fillRect(0, 0, outputWidth, outputHeight);
     }
@@ -1261,13 +1255,26 @@
       roundRect(context, x, y, width, height, config.radius, "#fff", "#cbd5e1", config.borderWidth);
 
       context.save();
-      context.beginPath();
-      context.rect(x, y, width, height);
+      roundRect(context, x, y, width, height, config.radius, null, null);
       context.clip();
 
+      const heightScale = height / Math.max(1, config.referenceHeight);
+      const areaScale = Math.sqrt(
+        (width / Math.max(1, config.referenceWidth)) * heightScale
+      );
+      const textScale = config.textScale * areaScale;
+
       const style = getCategoryStyle(item.category);
-      const categoryHeight = Math.min(config.categoryBand, height * .16, Math.max(18, width * .09));
-      const ageHeight = Math.min(config.ageBand, height * .11, Math.max(15, width * .055));
+      const categoryHeight = Math.min(
+        config.categoryBand * heightScale,
+        height * .16,
+        Math.max(18, width * .09)
+      );
+      const ageHeight = Math.min(
+        config.ageBand * heightScale,
+        height * .11,
+        Math.max(15, width * .055)
+      );
 
       context.fillStyle = style.background;
       context.fillRect(x, y, width, categoryHeight);
@@ -1323,21 +1330,27 @@
       const parts = [];
       if (item.title) {
         parts.push({
-          text:item.title, ratio:.42, max:78 * config.textScale,
-          color:"#0f172a", weight:"700"
+          text:item.title,
+          ratio:.42,
+          max:78 * textScale,
+          color:"#0f172a",
+          weight:"700"
         });
       }
       if (!["無料配布","Web展示"].includes(item.category) && item.price) {
         parts.push({
-          text:item.price, ratio:.28, max:100 * config.textScale,
-          color:style.background, weight:"700"
+          text:item.price,
+          ratio:.28,
+          max:100 * textScale,
+          color:style.background,
+          weight:"700"
         });
       }
       if (item.desc) {
         parts.push({
           text:item.desc,
           ratio:.30,
-          max:Math.max(8, Math.min(100, Number(item.descriptionFontSize) || 38)) * config.textScale,
+          max:Math.max(8, Math.min(100, Number(item.descriptionFontSize) || 38)) * textScale,
           color:"#475569",
           weight:"400"
         });
@@ -1352,10 +1365,10 @@
           { x:textX, y:cursorY, width:textWidth, height:partHeight },
           {
             maxFont:part.max,
-            minFont:Math.max(4, 7 * config.textScale),
+            minFont:Math.max(4, 7 * textScale),
             color:part.color,
             weight:part.weight,
-            align:"right"
+            align:"left"
           });
         cursorY += partHeight;
       });
@@ -1414,11 +1427,11 @@
         const padding = social ? social.padding : Math.round(25 * scale);
         const startY = headerHeight + (social ? 10 : Math.max(24 * scale, safeY));
 
-        // 新刊は全幅・高さ1.5単位、その他は2列・高さ1単位で配置する。
+        // 新刊は通常カードと同じ幅で高さ1.5倍、その他は2列で配置する。
         const rows = [];
         items.forEach((item) => {
           if (item.category === "新刊") {
-            rows.push({ items:[item], units:1.5, fullWidth:true });
+            rows.push({ items:[item], units:1.5, fullWidth:false });
             return;
           }
 
@@ -1441,7 +1454,6 @@
           1,
           (trimWidth - marginX * 2 - gapX) / columns
         );
-        const fullCardWidth = Math.max(1, trimWidth - marginX * 2);
 
         const config = {
           social:Boolean(social),
@@ -1450,7 +1462,9 @@
           categoryBand:social ? social.categoryBand : unitHeight * .14,
           ageBand:social ? social.ageBand : unitHeight * .09,
           borderWidth:social ? 2 : Math.max(2, 4 * scale),
-          textScale:social ? social.cardScale : scale
+          textScale:social ? social.cardScale : scale,
+          referenceWidth:cardWidth,
+          referenceHeight:unitHeight
         };
 
         let y = bleedTop + startY;
@@ -1459,11 +1473,8 @@
 
           const cardHeight = unitHeight * row.units;
           row.items.forEach((item, columnIndex) => {
-            const width = row.fullWidth ? fullCardWidth : cardWidth;
-            const x = bleedLeft + marginX +
-              (row.fullWidth ? 0 : columnIndex * (cardWidth + gapX));
-
-            drawCard(context, item, x, y, width, cardHeight, config, landscape);
+            const x = bleedLeft + marginX + columnIndex * (cardWidth + gapX);
+            drawCard(context, item, x, y, cardWidth, cardHeight, config, landscape);
           });
           y += cardHeight + gapY;
         });
