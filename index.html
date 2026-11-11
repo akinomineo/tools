@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>同人おしながきジェネレーター</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=BIZ+UDPMincho:wght@400;700&family=Dela+Gothic+One&family=DotGothic16&family=Kaisei+Decol:wght@400;700&family=Klee+One:wght@400;600&family=Kosugi&family=Kosugi+Maru&family=M+PLUS+1p:wght@400;700;800&family=M+PLUS+Rounded+1c:wght@400;700;800&family=Noto+Sans+JP:wght@400;700;900&family=RocknRoll+One&family=Sawarabi+Gothic&family=Sawarabi+Mincho&family=Shippori+Mincho:wght@400;700;800&family=Yusei+Magic&family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Zen+Maru+Gothic:wght@400;700;900&family=Zen+Old+Mincho:wght@400;700;900&display=swap" rel="stylesheet">
+
   <style>
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
@@ -431,7 +436,7 @@
             最新の配色パターン（4種類）
             <div id="presetColorPalette" class="palette"></div>
             <small style="display:block;margin-top:5px;color:#64748b">
-              最明色＝全体背景、最暗色＝ヘッダー・新刊、2番目に明るい色＝年齢区分帯です。カテゴリ帯の文字は白、カード本体は白です。
+              最明色＝全体背景、最暗色＝ヘッダーと新刊、2番目に明るい色＝年齢区分帯です。カード本体は白です。
             </small>
           </div>
           <div id="customBgControls" class="hidden">
@@ -465,6 +470,19 @@
         </section>
 
         <section class="section">
+          <h2>フォント設定</h2>
+          <label class="field">イベント・サークル情報のヘッダーフォント
+            <select id="headerFontFamily" name="headerFontFamily" class="control"></select>
+          </label>
+          <label class="field">頒布物カード全体のフォント
+            <select id="cardFontFamily" name="cardFontFamily" class="control"></select>
+          </label>
+          <small style="color:#64748b;font-size:9px">
+            フォントは無料で利用できるGoogle Fontsを含みます。オンライン環境で読み込まれます。
+          </small>
+        </section>
+
+        <section class="section">
           <h2>ヘッダー配色</h2>
           <div class="two-col">
             <label class="field">背景色
@@ -486,9 +504,6 @@
               <input id="eventInfoTextColor" name="eventInfoTextColor" type="color" value="#ffffff" class="color-control">
             </label>
           </div>
-          <label class="field">イベント名・日時フォント
-            <select id="eventInfoFontFamily" name="eventInfoFontFamily" class="control"></select>
-          </label>
           <label class="check-row">
             イベント情報の背景色
             <input id="eventInfoBgEnabled" name="eventInfoBgEnabled" type="checkbox">
@@ -505,9 +520,6 @@
               <input id="spaceInfoTextColor" name="spaceInfoTextColor" type="color" value="#ffffff" class="color-control">
             </label>
           </div>
-          <label class="field">スペース番号フォント
-            <select id="spaceInfoFontFamily" name="spaceInfoFontFamily" class="control"></select>
-          </label>
           <label class="check-row">
             スペース番号の背景色
             <input id="spaceInfoBgEnabled" name="spaceInfoBgEnabled" type="checkbox">
@@ -524,9 +536,6 @@
               <input id="circleInfoTextColor" name="circleInfoTextColor" type="color" value="#ffffff" class="color-control">
             </label>
           </div>
-          <label class="field">サークル名フォント
-            <select id="circleInfoFontFamily" name="circleInfoFontFamily" class="control"></select>
-          </label>
           <label class="check-row">
             サークル名の背景色
             <input id="circleInfoBgEnabled" name="circleInfoBgEnabled" type="checkbox">
@@ -637,17 +646,19 @@
       const header = getDarkestColor(palette.colors);
       const ageBandColor = getSecondLightestColor(palette.colors);
 
-      // 背景色と年齢区分帯色を除いた4色をカテゴリに利用する。
-      // 最暗色は新刊用として含める。
       const otherCategoryColors = palette.colors.filter((color) => {
-        const normalized = color.toUpperCase();
-        return normalized !== background.toUpperCase() &&
-          normalized !== ageBandColor.toUpperCase();
+        const value = color.toUpperCase();
+        return value !== background.toUpperCase() &&
+          value !== ageBandColor.toUpperCase();
       });
 
-      const categoryColors = [header, ...otherCategoryColors.filter(
-        (color) => color.toUpperCase() !== header.toUpperCase()
-      )];
+      // 新刊は最暗色に固定。残り3カテゴリには他の色を割り当てる。
+      const categoryColors = [
+        header,
+        ...otherCategoryColors.filter(
+          (color) => color.toUpperCase() !== header.toUpperCase()
+        )
+      ];
 
       return {
         ...palette,
@@ -658,59 +669,195 @@
       };
     });
 
-    const FONT_FAMILIES = [
-      { label:"Noto Sans JP", value:'"Noto Sans JP", sans-serif' },
-      { label:"游ゴシック", value:'"Yu Gothic", sans-serif' },
-      { label:"メイリオ", value:"Meiryo, sans-serif" },
-      { label:"ゴシック体", value:"sans-serif" },
-      { label:"明朝体", value:"serif" },
-      { label:"等幅", value:"monospace" }
+    const FONT_OPTIONS = [
+      {
+        label:"Noto Sans JP（ゴシック）",
+        value:'"Noto Sans JP", sans-serif'
+      },
+      {
+        label:"BIZ UDPゴシック",
+        value:'"BIZ UDPGothic", sans-serif'
+      },
+      {
+        label:"Zen Kaku Gothic New",
+        value:'"Zen Kaku Gothic New", sans-serif'
+      },
+      {
+        label:"M PLUS 1p",
+        value:'"M PLUS 1p", sans-serif'
+      },
+      {
+        label:"M PLUS Rounded 1c（丸ゴシック）",
+        value:'"M PLUS Rounded 1c", sans-serif'
+      },
+      {
+        label:"Zen Maru Gothic（丸ゴシック）",
+        value:'"Zen Maru Gothic", sans-serif'
+      },
+      {
+        label:"Kosugi",
+        value:'"Kosugi", sans-serif'
+      },
+      {
+        label:"Kosugi Maru",
+        value:'"Kosugi Maru", sans-serif'
+      },
+      {
+        label:"Sawarabi Gothic",
+        value:'"Sawarabi Gothic", sans-serif'
+      },
+      {
+        label:"Dela Gothic One（太字）",
+        value:'"Dela Gothic One", sans-serif'
+      },
+      {
+        label:"DotGothic16（ドット）",
+        value:'"DotGothic16", sans-serif'
+      },
+      {
+        label:"RocknRoll One",
+        value:'"RocknRoll One", sans-serif'
+      },
+      {
+        label:"Yusei Magic",
+        value:'"Yusei Magic", sans-serif'
+      },
+      {
+        label:"Noto Sans JP（明朝）",
+        value:'"Noto Sans JP", serif'
+      },
+      {
+        label:"BIZ UDP明朝",
+        value:'"BIZ UDPMincho", serif'
+      },
+      {
+        label:"Shippori Mincho",
+        value:'"Shippori Mincho", serif'
+      },
+      {
+        label:"Zen Old Mincho",
+        value:'"Zen Old Mincho", serif'
+      },
+      {
+        label:"Sawarabi Mincho",
+        value:'"Sawarabi Mincho", serif'
+      },
+      {
+        label:"Kaisei Decol",
+        value:'"Kaisei Decol", serif'
+      },
+      {
+        label:"Klee One（手書き風）",
+        value:'"Klee One", cursive'
+      },
+      {
+        label:"游ゴシック（端末標準）",
+        value:'"Yu Gothic", sans-serif'
+      },
+      {
+        label:"メイリオ（端末標準）",
+        value:"Meiryo, sans-serif"
+      },
+      {
+        label:"標準ゴシック体",
+        value:"sans-serif"
+      },
+      {
+        label:"標準明朝体",
+        value:"serif"
+      }
     ];
 
     const PRINT_SPECS = {
       A3: {
-        widthMm:303, heightMm:426,
-        widthPx:2386, heightPx:3354,
-        trimWidthMm:297, trimHeightMm:420
+        widthMm:303,
+        heightMm:426,
+        widthPx:2386,
+        heightPx:3354,
+        trimWidthMm:297,
+        trimHeightMm:420
       },
       A4: {
-        widthMm:216, heightMm:303,
-        widthPx:2976, heightPx:4175,
-        trimWidthMm:210, trimHeightMm:297
+        widthMm:216,
+        heightMm:303,
+        widthPx:2976,
+        heightPx:4175,
+        trimWidthMm:210,
+        trimHeightMm:297
       }
     };
 
     const SOCIAL_PRESETS = {
       WEB_PORTRAIT: {
-        width:960, height:1280, orientation:"PORTRAIT", label:"X用縦書き"
+        width:960,
+        height:1280,
+        orientation:"PORTRAIT",
+        label:"X用縦書き"
       },
       WEB_LANDSCAPE: {
-        width:1200, height:675, orientation:"LANDSCAPE", label:"X用横書き"
+        width:1200,
+        height:675,
+        orientation:"LANDSCAPE",
+        label:"X用横書き"
       },
       PICSQUARE: {
-        width:500, height:1000, orientation:"PORTRAIT", label:"ピクスク用"
+        width:500,
+        height:1000,
+        orientation:"PORTRAIT",
+        label:"ピクスク用"
       },
       PICREA: {
-        width:800, height:1600, orientation:"PORTRAIT", label:"ピクリエ用"
+        width:800,
+        height:1600,
+        orientation:"PORTRAIT",
+        label:"ピクリエ用"
       }
     };
 
     const SOCIAL_LAYOUTS = {
       WEB_PORTRAIT: {
-        header:250, marginX:28, marginY:22, gapX:16, gapY:16,
-        padding:12, cardScale:.55, categoryBand:46, ageBand:28
+        header:250,
+        marginX:28,
+        marginY:22,
+        gapX:16,
+        gapY:16,
+        padding:12,
+        cardScale:.55,
+        categoryBand:46,
+        ageBand:28
       },
       WEB_LANDSCAPE: {
-        header:160, marginX:28, marginY:18, gapX:16, gapY:16,
-        padding:11, cardScale:.48, categoryBand:38, ageBand:24
+        header:160,
+        marginX:28,
+        marginY:18,
+        gapX:16,
+        gapY:16,
+        padding:11,
+        cardScale:.48,
+        categoryBand:38,
+        ageBand:24
       },
       PICSQUARE: {
-        header:143, marginX:16, marginY:16, gapX:12, gapY:12,
-        padding:8, cardScale:.35, categoryBand:34, ageBand:21
+        header:143,
+        marginX:16,
+        marginY:16,
+        gapX:12,
+        gapY:12,
+        padding:8,
+        cardScale:.35,
+        categoryBand:34,
+        ageBand:21
       },
       PICREA: {
-        header:270, marginX:24, marginY:22, gapX:16, gapY:16,
-        padding:12, cardScale:.50, categoryBand:44, ageBand:28
+        header:270,
+        marginX:24,
+        marginY:22,
+        gapX:16,
+        gapY:16,
+        padding:12,
+        cardScale:.50,
+        categoryBand:44,
+        ageBand:28
       }
     };
 
@@ -743,6 +890,14 @@
     let renderToken = 0;
     let nextItemNumber = 3;
 
+    function getHeaderFontFamily() {
+      return getEl("headerFontFamily").value || DEFAULT_FONT_FAMILY;
+    }
+
+    function getCardFontFamily() {
+      return getEl("cardFontFamily").value || DEFAULT_FONT_FAMILY;
+    }
+
     function makeDefaultItem(number) {
       return {
         category:"新刊",
@@ -751,11 +906,6 @@
         price:"500円",
         desc:"サンプルテキスト",
         descriptionFontSize:38,
-        categoryFontFamily:DEFAULT_FONT_FAMILY,
-        ageRatingFontFamily:DEFAULT_FONT_FAMILY,
-        titleFontFamily:DEFAULT_FONT_FAMILY,
-        priceFontFamily:DEFAULT_FONT_FAMILY,
-        descFontFamily:DEFAULT_FONT_FAMILY,
         image:null,
         imageSrc:"",
         imageWidth:0,
@@ -768,7 +918,9 @@
 
     function getEl(id) {
       const element = document.getElementById(id);
-      if (!element) throw new Error(`必要なHTML要素がありません: #${id}`);
+      if (!element) {
+        throw new Error(`必要なHTML要素がありません: #${id}`);
+      }
       return element;
     }
 
@@ -788,7 +940,6 @@
 
       return {
         background:color,
-        // カテゴリ帯の文字色はカテゴリにかかわらず白。
         text:"#FFFFFF"
       };
     }
@@ -803,22 +954,16 @@
       })[character]);
     }
 
-    function fontFamilyOptions(selected) {
-      return FONT_FAMILIES.map(({ label, value }) =>
-        `<option value="${escapeHTML(value)}" ${selected === value ? "selected" : ""}>${escapeHTML(label)}</option>`
+    function buildFontOptions(select, selectedValue) {
+      select.innerHTML = FONT_OPTIONS.map(({ label, value }) =>
+        `<option value="${escapeHTML(value)}">${escapeHTML(label)}</option>`
       ).join("");
+      select.value = selectedValue;
     }
 
-    function initializeHeaderFontControls() {
-      [
-        "eventInfoFontFamily",
-        "spaceInfoFontFamily",
-        "circleInfoFontFamily"
-      ].forEach((id) => {
-        const select = getEl(id);
-        select.innerHTML = fontFamilyOptions(DEFAULT_FONT_FAMILY);
-        select.value = DEFAULT_FONT_FAMILY;
-      });
+    function initializeFontControls() {
+      buildFontOptions(getEl("headerFontFamily"), DEFAULT_FONT_FAMILY);
+      buildFontOptions(getEl("cardFontFamily"), DEFAULT_FONT_FAMILY);
     }
 
     function getLayoutLabel() {
@@ -842,10 +987,10 @@
       getEl("headerBgColor").value = palette.header;
       getEl("headerAccentColor").value = palette.categoryColors[1];
 
-      const headerTextColor = getReadableTextColor(palette.header);
-      getEl("eventInfoTextColor").value = headerTextColor;
-      getEl("spaceInfoTextColor").value = headerTextColor;
-      getEl("circleInfoTextColor").value = headerTextColor;
+      const textColor = getReadableTextColor(palette.header);
+      getEl("eventInfoTextColor").value = textColor;
+      getEl("spaceInfoTextColor").value = textColor;
+      getEl("circleInfoTextColor").value = textColor;
 
       getEl("eventInfoBgColor").value = palette.header;
       getEl("spaceInfoBgColor").value = palette.header;
@@ -883,6 +1028,7 @@
           });
           button.classList.add("selected");
           applyPalette(preset);
+
           getEl("paperSpecLabel").textContent =
             `${getLayoutLabel()}・${selectedPalette.name}`;
         });
@@ -895,7 +1041,7 @@
 
     function initialize() {
       try {
-        initializeHeaderFontControls();
+        initializeFontControls();
         buildPalette();
         renderItems();
         bindEvents();
@@ -1025,44 +1171,19 @@
             </label>
           </div>
 
-          <label class="field">カテゴリ文字フォント
-            <select id="item-${index}-categoryFontFamily" name="item-${index}-categoryFontFamily" class="control" data-index="${index}" data-key="categoryFontFamily">
-              ${fontFamilyOptions(item.categoryFontFamily)}
-            </select>
-          </label>
-          <label class="field">年齢区分文字フォント
-            <select id="item-${index}-ageRatingFontFamily" name="item-${index}-ageRatingFontFamily" class="control" data-index="${index}" data-key="ageRatingFontFamily">
-              ${fontFamilyOptions(item.ageRatingFontFamily)}
-            </select>
-          </label>
-
           <label class="field">タイトル
             <input id="item-${index}-title" name="item-${index}-title" class="control" type="text" data-index="${index}" data-key="title" value="${escapeHTML(item.title)}">
           </label>
-          <label class="field">タイトル文字フォント
-            <select id="item-${index}-titleFontFamily" name="item-${index}-titleFontFamily" class="control" data-index="${index}" data-key="titleFontFamily">
-              ${fontFamilyOptions(item.titleFontFamily)}
-            </select>
-          </label>
 
-          <label class="field">価格
+          <label class="field">価格（無料配布・Web展示は空欄）
             <input id="item-${index}-price" name="item-${index}-price" class="control" type="text" data-index="${index}" data-key="price"
               value="${escapeHTML(item.price)}" ${["無料配布","Web展示"].includes(item.category) ? "disabled" : ""}>
-          </label>
-          <label class="field">価格文字フォント
-            <select id="item-${index}-priceFontFamily" name="item-${index}-priceFontFamily" class="control" data-index="${index}" data-key="priceFontFamily">
-              ${fontFamilyOptions(item.priceFontFamily)}
-            </select>
           </label>
 
           <label class="field">説明
             <textarea id="item-${index}-desc" name="item-${index}-desc" class="control" data-index="${index}" data-key="desc" rows="3">${escapeHTML(item.desc)}</textarea>
           </label>
-          <label class="field">説明文字フォント
-            <select id="item-${index}-descFontFamily" name="item-${index}-descFontFamily" class="control" data-index="${index}" data-key="descFontFamily">
-              ${fontFamilyOptions(item.descFontFamily)}
-            </select>
-          </label>
+
           <label class="field">説明文フォントサイズ
             <input id="item-${index}-descriptionFontSize" name="item-${index}-descriptionFontSize" class="control" type="number" min="8" max="100" data-index="${index}" data-key="descriptionFontSize" value="${item.descriptionFontSize}">
           </label>
@@ -1071,11 +1192,11 @@
             <input id="item-${index}-noImage" name="item-${index}-noImage" type="checkbox" data-noimage="${index}" ${item.noImage ? "checked" : ""}>
             画像なし（テキスト欄を広く表示）
           </label>
+
           <label class="field">個別画像
             <input id="item-${index}-image" name="item-${index}-image" class="control" type="file" accept="image/*" data-image="${index}" ${item.noImage ? "disabled" : ""}>
           </label>
         `;
-
         root.appendChild(card);
       });
 
@@ -1267,14 +1388,13 @@
     function getHeaderStyle(prefix, defaultSize, defaultColor) {
       const sizeElement = document.getElementById(`${prefix}FontSize`);
       const colorElement = document.getElementById(`${prefix}TextColor`);
-      const familyElement = document.getElementById(`${prefix}FontFamily`);
       const enabledElement = document.getElementById(`${prefix}BgEnabled`);
       const backgroundElement = document.getElementById(`${prefix}BgColor`);
       const parsedSize = Number.parseInt(sizeElement ? sizeElement.value : "", 10);
 
       return {
         size:Number.isFinite(parsedSize) ? parsedSize : defaultSize,
-        family:(familyElement && familyElement.value) || DEFAULT_FONT_FAMILY,
+        family:getHeaderFontFamily(),
         color:(colorElement && colorElement.value) || defaultColor,
         background:enabledElement && enabledElement.checked && backgroundElement
           ? backgroundElement.value
@@ -1573,8 +1693,8 @@
     function drawCard(context, item, x, y, width, height, config) {
       const padding = config.padding;
       const categoryStyle = getCategoryStyle(item.category);
+      const cardFontFamily = getCardFontFamily();
 
-      // 頒布物カード本体は白。
       roundRect(
         context,
         x,
@@ -1608,7 +1728,7 @@
         Math.max(15, width * .055)
       );
 
-      // カテゴリ帯。新刊は最暗色、文字色はカテゴリ共通で白。
+      // 新刊は最暗色を固定使用。カテゴリ帯の文字はすべて白。
       context.fillStyle = categoryStyle.background;
       context.fillRect(x, y, width, categoryHeight);
 
@@ -1625,14 +1745,14 @@
           maxFont:Math.min(categoryHeight * .78, width * .2),
           minFont:1,
           weight:"700",
-          family:item.categoryFontFamily,
+          family:cardFontFamily,
           color:"#FFFFFF",
           align:"left",
           lineHeight:1
         }
       );
 
-      // 年齢区分帯にはパレット内の2番目に明るい色を使う。
+      // 年齢区分帯は2番目に明るい色。
       const ageY = y + categoryHeight;
       const ageBandColor = selectedPalette.ageBandColor;
 
@@ -1652,7 +1772,7 @@
           maxFont:Math.min(ageHeight * .75, width * .16),
           minFont:1,
           weight:"700",
-          family:item.ageRatingFontFamily,
+          family:cardFontFamily,
           color:getReadableTextColor(ageBandColor),
           align:"left",
           lineHeight:1
@@ -1696,7 +1816,6 @@
           text:item.title,
           ratio:.42,
           max:78 * textScale,
-          family:item.titleFontFamily,
           color:"#0f172a",
           weight:"700"
         });
@@ -1707,7 +1826,6 @@
           text:item.price,
           ratio:.28,
           max:100 * textScale,
-          family:item.priceFontFamily,
           color:categoryStyle.background,
           weight:"700"
         });
@@ -1721,7 +1839,6 @@
             8,
             Math.min(100, Number(item.descriptionFontSize) || 38)
           ) * textScale,
-          family:item.descFontFamily,
           color:"#475569",
           weight:"400"
         });
@@ -1743,7 +1860,7 @@
           {
             maxFont:part.max,
             minFont:Math.max(4, 7 * textScale),
-            family:part.family,
+            family:cardFontFamily,
             color:part.color,
             weight:part.weight,
             align:"left"
@@ -1795,7 +1912,6 @@
           ? social.header
           : Math.round(trimHeight * (orientation === "LANDSCAPE" ? .17 : .15));
 
-        // ヘッダー背景はパレット内の最暗色。
         context.fillStyle = selectedPalette.header;
         context.fillRect(
           0,
@@ -1838,7 +1954,6 @@
         const startY = headerHeight +
           (social ? 10 : Math.max(24 * printScale, safeY));
 
-        // 新刊は1行に最大2枚、行の高さを通常行の1.5倍にする。
         const rows = [];
 
         items.forEach((item) => {
@@ -2028,7 +2143,6 @@
           : spec.heightMm;
 
       const popup = window.open("", "_blank");
-
       if (!popup) {
         alert("ポップアップを許可してください。");
         return;
@@ -2078,22 +2192,35 @@
         getEl(id).addEventListener("input", renderCanvas);
       });
 
+      // フォント選択欄はヘッダー用とカード全体用の2か所のみ。
+      ["headerFontFamily", "cardFontFamily"].forEach((id) => {
+        const select = getEl(id);
+        select.addEventListener("change", async () => {
+          const family = select.value;
+          if (document.fonts && family) {
+            try {
+              await document.fonts.load(`16px ${family}`);
+            } catch (error) {
+              console.warn("フォント読み込みに失敗しました:", error);
+            }
+          }
+          renderCanvas();
+        });
+      });
+
       [
         "headerBgColor",
         "headerAccentColor",
         "eventInfoFontSize",
         "eventInfoTextColor",
-        "eventInfoFontFamily",
         "eventInfoBgEnabled",
         "eventInfoBgColor",
         "spaceInfoFontSize",
         "spaceInfoTextColor",
-        "spaceInfoFontFamily",
         "spaceInfoBgEnabled",
         "spaceInfoBgColor",
         "circleInfoFontSize",
         "circleInfoTextColor",
-        "circleInfoFontFamily",
         "circleInfoBgEnabled",
         "circleInfoBgColor"
       ].forEach((id) => {
